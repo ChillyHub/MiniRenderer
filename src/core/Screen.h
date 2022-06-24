@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Buffer.h"
+#include "Input.h"
 
 namespace MiniRenderer
 {
@@ -22,6 +23,14 @@ namespace MiniRenderer
 	public:
 		static LRESULT CALLBACK WinSunProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 		static void ResizeWindow(HWND hWnd);
+		
+		static HWND GetHandleWnd() { return s_hWnd; }
+		static int GetKeyPress(size_t i) { return s_keyPress[i]; }
+		static int GetMousePress(size_t i) { return s_mousePress[i]; }
+		static int GetWheelDelta() { return s_wheelDelta; }
+		static bool IsHovered() { return s_isHovered; }
+
+		static void ResetWheelDelta() { s_wheelDelta = 0; }
 	private:
 		void messageDispatch();
 		void setViewBitmap();
@@ -37,6 +46,11 @@ namespace MiniRenderer
 		static BITMAPINFO s_bitmapInfo;
 		static BITMAP s_viewBitmap;
 		static Framebuffer* s_deviceFramebuffer;
+
+		static int s_keyPress[1024];
+		static int s_mousePress[1024];
+		static int s_wheelDelta;
+		static bool s_isHovered;
 
 		static Renderer* m_renderer;
 	};

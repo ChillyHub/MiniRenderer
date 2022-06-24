@@ -18,6 +18,13 @@ namespace MiniRenderer
 	}
 
 	template <size_t N, typename T>
+	inline constexpr Vec<N, T>::Vec(T n)
+	{
+		for (size_t i = 0; i < N; ++i)
+			e[i] = n;
+	}
+
+	template <size_t N, typename T>
 	inline constexpr Vec<N, T>::Vec(const T* p)
 	{
 		for (size_t i = 0; i < N; ++i)
@@ -54,16 +61,31 @@ namespace MiniRenderer
 	}
 
 	template <size_t N, typename T>
+	template <typename U>
+	inline constexpr Vec<N, T>::Vec(const Vec<Type::Dynamic, U>& v)
+	{
+		for (size_t i = 0; i < N; ++i)
+		{
+			if (i < v.length())
+				e[i] = static_cast<T>(v[i]);
+			else
+				e[i] = T();
+		}
+	}
+
+	template <size_t N, typename T>
 	inline constexpr T& Vec<N, T>::operator[] (size_t i)
 	{
-		assert(i >= 0 && i < N);
+		if (i < 0 || i >= N)
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return e[i];
 	}
 
 	template <size_t N, typename T>
 	inline constexpr const T& Vec<N, T>::operator[] (size_t i) const
 	{
-		assert(i >= 0 && i < N);
+		if (i < 0 || i >= N)
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return e[i];
 	}
 
@@ -263,6 +285,9 @@ namespace MiniRenderer
 	inline constexpr Vec<2, T>::Vec(T _x, T _y) : x(_x), y(_y) {}
 
 	template <typename T>
+	inline constexpr Vec<2, T>::Vec(T n) : x(n), y(n) {}
+
+	template <typename T>
 	inline constexpr Vec<2, T>::Vec(const T* p) : x(p[0]), y(p[1]) {}
 
 	template <typename T>
@@ -289,16 +314,26 @@ namespace MiniRenderer
 		: x(static_cast<T>(src.x)), y(static_cast<T>(src.y)) {}
 
 	template <typename T>
+	template <typename U>
+	inline constexpr Vec<2, T>::Vec(const Vec<Type::Dynamic, U>& v)
+	{
+		x = v.length() > 0 ? static_cast<T>(v[0]) : T();
+		y = v.length() > 1 ? static_cast<T>(v[1]) : T();
+	}
+
+	template <typename T>
 	inline constexpr T& Vec<2, T>::operator[] (size_t i)
 	{
-		assert(i >= 0 && i < 2);
+		if (i < 0 || i >= 2)
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return e[i];
 	}
 
 	template <typename T>
 	inline constexpr const T& Vec<2, T>::operator[] (size_t i) const
 	{
-		assert(i >= 0 && i < 2);
+		if (i < 0 || i >= 2)
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return e[i];
 	}
 
@@ -493,6 +528,9 @@ namespace MiniRenderer
 	inline constexpr Vec<3, T>::Vec() : x(T()), y(T()), z(T()) {}
 
 	template <typename T>
+	inline constexpr Vec<3, T>::Vec(T n) : x(n), y(n), z(n) {}
+
+	template <typename T>
 	inline constexpr Vec<3, T>::Vec(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
 
 	template <typename T>
@@ -525,16 +563,30 @@ namespace MiniRenderer
 		, z(static_cast<T>(src.z)) {}
 
 	template <typename T>
+	template <typename U>
+	inline constexpr Vec<3, T>::Vec(const Vec<Type::Dynamic, U>& v)
+	{
+		x = v.length() > 0 ? static_cast<T>(v[0]) : T();
+		y = v.length() > 1 ? static_cast<T>(v[1]) : T();
+		z = v.length() > 2 ? static_cast<T>(v[2]) : T();
+	}
+
+	template <typename T>
 	inline constexpr T& Vec<3, T>::operator[] (size_t i)
 	{
-		assert(i >= 0 && i < 3);
+		if (i < 0 || i >= 3)
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return e[i];
 	};
 
 	template <typename T>
 	inline constexpr const T& Vec<3, T>::operator[] (size_t i) const
 	{
-		assert(i >= 0 && i < 3);
+		if (i < 0 || i >= 3) {
+			int a = 0;
+			a = a + a;
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
+		}
 		return e[i];
 	};
 
@@ -769,6 +821,9 @@ namespace MiniRenderer
 		: x(T()), y(T()), z(T()), w(T()) {}
 
 	template <typename T>
+	inline constexpr Vec<4, T>::Vec(T n) : x(n), y(n), z(n), w(n) {}
+
+	template <typename T>
 	inline constexpr Vec<4, T>::Vec(T _x, T _y, T _z, T _w)
 		: x(_x), y(_y), z(_z), w(_w) {}
 
@@ -811,16 +866,28 @@ namespace MiniRenderer
 		, z(static_cast<T>(src.z)), w(static_cast<T>(src.w)) {}
 
 	template <typename T>
+	template <typename U>
+	inline constexpr Vec<4, T>::Vec(const Vec<Type::Dynamic, U>& v)
+	{
+		x = v.length() > 0 ? static_cast<T>(v[0]) : T();
+		y = v.length() > 1 ? static_cast<T>(v[1]) : T();
+		z = v.length() > 2 ? static_cast<T>(v[2]) : T();
+		w = v.length() > 3 ? static_cast<T>(v[3]) : T();
+	}
+
+	template <typename T>
 	inline constexpr T& Vec<4, T>::operator[] (size_t i)
 	{
-		assert(i >= 0 && i < 4);
+		if (i < 0 || i >= 4)
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return e[i];
 	}
 
 	template <typename T>
 	inline constexpr const T& Vec<4, T>::operator[] (size_t i) const
 	{
-		assert(i >= 0 && i < 4);
+		if (i < 0 || i >= 4)
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return e[i];
 	}
 
@@ -1106,6 +1173,14 @@ namespace MiniRenderer
 	}
 
 	template <typename T>
+	inline constexpr Vec<Type::Dynamic, T>::Vec(size_t size, T n)
+	{
+		e = new T[size];
+		for (size_t i = 0; i < size; ++i)
+			e[i] = n;
+	}
+
+	template <typename T>
 	inline constexpr Vec<Type::Dynamic, T>::Vec(size_t size, const T* p)
 		: len(size)
 	{
@@ -1149,14 +1224,16 @@ namespace MiniRenderer
 	template <typename T>
 	inline constexpr T& Vec<Type::Dynamic, T>::operator[] (size_t i)
 	{
-		assert(i >= 0 && i < len);
+		if (i < 0 || i >= len)
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return e[i];
 	}
 
 	template <typename T>
 	inline constexpr const T& Vec<Type::Dynamic, T>::operator[] (size_t i) const
 	{
-		assert(i >= 0 && i < len);
+		if (i < 0 || i >= len)
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return e[i];
 	}
 

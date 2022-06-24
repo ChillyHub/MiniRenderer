@@ -14,7 +14,7 @@ namespace MiniRenderer
 		}
 		catch (const std::exception& e)
 		{
-			std::cerr << "ERROR::" << e.what() << std::endl;
+			std::cerr << e.what() << std::endl;
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -29,6 +29,17 @@ namespace MiniRenderer
 	//	return &m_screen;
 	//}
 
+	Camera& Renderer::AddCamera()
+	{
+		m_camera = std::shared_ptr<Camera>(new Camera);
+		return *m_camera.get();
+	}
+
+	void Renderer::AddCamera(std::shared_ptr<Camera> camera)
+	{
+		m_camera = camera;
+	}
+
 	void Renderer::Run()
 	{
 		try
@@ -38,6 +49,11 @@ namespace MiniRenderer
 			while (m_screen.ShouldRun())
 			{
 				m_profiler.UpdateFPS();
+				
+				if (m_camera)
+				{
+					m_camera->Update();
+				}
 
 				Update();
 
@@ -47,7 +63,7 @@ namespace MiniRenderer
 		}
 		catch (const std::exception& e)
 		{
-			std::cerr << "ERROR::" << e.what() << std::endl;
+			std::cerr << e.what() << std::endl;
 			exit(EXIT_FAILURE);
 		}
 	}

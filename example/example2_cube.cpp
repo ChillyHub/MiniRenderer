@@ -53,14 +53,18 @@ int main()
 	// Renderer
 
 	Renderer renderer(800, 600);
+	auto& camera = renderer.AddCamera();
+	camera.Position = { 1.0f, 1.0f, 1.0f };
+	camera.CameraLookAt({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+	camera.Fov = 60.0f;
 
 	renderer.Update = [&]() {
 		Mat4 mat(1.0f);
 		Mat4 trans = Math::Translate(mat, { 0.0f, 0.0f, 0.0f });
 		Mat4 rota = Math::Rotate(mat, (float)Time::GetTime(), { 0.0f, 0.0f, 1.0f });
 		unif.model = trans * rota;
-		unif.view = Math::LookAt(Vec3{ 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
-		unif.proj = Math::Perspective(Math::Radians(60.0f), 800.0f / 600.0f, 1.0f, 40.0f);
+		unif.view = camera.GetViewMat();
+		unif.proj = camera.GetProjectMat();
 
 		renderer.DrawCall(vertices, 6, shader);
 	};

@@ -5,6 +5,8 @@
 #include "math/type/Mat.h"
 #include "math/type/Quat.h"
 
+#include "math/func/Algorithm.h"
+
 namespace MiniRenderer::Math
 {
 	// Number ------------------------------------------------------
@@ -27,6 +29,7 @@ namespace MiniRenderer::Math
 	template <typename T> T Exp(T a);
 	template <typename T> T Log(T a);
 	template <typename T> T Pow(T a, float p);
+	template <typename T> T Sqrt(T a);
 
 	template <typename T> T Asin(T a);
 	template <typename T> T Acos(T a);
@@ -87,23 +90,49 @@ namespace MiniRenderer::Math
 
 	template <typename T> T Saturate(const T& a);
 
+	template <typename T>
+	Vec<Type::Dynamic, T> Abs(const Vec<Type::Dynamic, T>& a);
+	template <typename T>
+	Vec<Type::Dynamic, T> Min(const Vec<Type::Dynamic, T>& a, const Vec<Type::Dynamic, T>& b);
+	template <typename T>
+	Vec<Type::Dynamic, T> Max(const Vec<Type::Dynamic, T>& a, const Vec<Type::Dynamic, T>& b);
+	template <typename T, typename U>
+	Vec<Type::Dynamic, T> Min(const Vec<Type::Dynamic, T>& a, U b);
+	template <typename T, typename U>
+	Vec<Type::Dynamic, T> Max(const Vec<Type::Dynamic, T>& a, U b);
+	template <typename T, typename U>
+	Vec<Type::Dynamic, T> Min(U a, const Vec<Type::Dynamic, T>& b);
+	template <typename T, typename U>
+	Vec<Type::Dynamic, T> Max(U a, const Vec<Type::Dynamic, T>& b);
+
+	template <typename T>
+	Vec<Type::Dynamic, T> Normailzed(const Vec<Type::Dynamic, T>& a);
+	template <typename T>
+	T Norm2(const Vec<Type::Dynamic, T>& a);
+
+	template <typename T>
+	Vec<Type::Dynamic, T> Floor(const Vec<Type::Dynamic, T>& a);
+	template <typename T>
+	Vec<Type::Dynamic, T> Ceil(const Vec<Type::Dynamic, T>& a);
+
+	template <typename T>
+	T Dot(const Vec<Type::Dynamic, T>& a, const Vec<Type::Dynamic, T>& b);
+	template <typename T>
+	T Cross(const Vec<Type::Dynamic, T>& a, const Vec<Type::Dynamic, T>& b);
+
 	// Matrix ------------------------------------------------------
 	// -------------------------------------------------------------
-	template <typename T>
-	T Det(const Mat<1, 1, T>& a);
-	template <typename T>
-	T Det(const Mat<2, 2, T>& a);
 	template <size_t N, typename T>
-	T Det(const Mat<N, N, T>& a);
+	Mat<N, 1, T> Transpose(const Vec<N, T>& a);
 	template <size_t M, size_t N, typename T>
 	Mat<N, M, T> Transpose(const Mat<M, N, T>& a);
 	template <size_t N, typename T>
 	Mat<N, N, T> Inverse(const Mat<N, N, T>& a);
 
-	template <size_t M, size_t N, typename T>
-	T Cofactor(const Mat<M, N, T>& src, size_t m, size_t n);
-	template <size_t M, size_t N, typename T>
-	Mat<N, M, T> Adjugate(const Mat<M, N, T>& a);
+	template <typename T>
+	Mat<Type::Dynamic, Type::Dynamic, T> Transpose(const Vec<Type::Dynamic, T>& a);
+	template <typename T>
+	Mat<Type::Dynamic, Type::Dynamic, T> Transpose(const Mat<Type::Dynamic, Type::Dynamic, T>& a);
 
 	// Quaternion --------------------------------------------------
 	// -------------------------------------------------------------
@@ -120,6 +149,9 @@ namespace MiniRenderer::Math
 	inline Quat Lerp(const Quat& a, const Quat& b, float t);
 	inline Quat Conjugate(const Quat& a);
 	inline Quat Inverse(const Quat& a);
+
+	inline Quat MatToQuat(const Mat3& a);
+	inline Quat MatToQuat(const Mat4& a);
 }
 
 // inline file

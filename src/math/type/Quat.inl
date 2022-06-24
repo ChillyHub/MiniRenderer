@@ -10,6 +10,9 @@ namespace MiniRenderer
 	constexpr Quat::Quat(const Quat& src)
 		: w(src.w), i(src.i), j(src.j), k(src.k) {}
 
+	constexpr Quat::Quat(float _w, const Vec3& v)
+		: w(_w), i(v.x), j(v.y), k(v.z) {}
+
 	constexpr Quat::Quat(float _w, float _i, float _j, float _k)
 		: w(_w), i(_i), j(_j), k(_k) {}
 
@@ -159,6 +162,8 @@ namespace MiniRenderer
 		q /= rhs;
 		return q;
 	}
+
+
 
 	constexpr bool operator==(const Quat& lhs, const Quat& rhs)
 	{

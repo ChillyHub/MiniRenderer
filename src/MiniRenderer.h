@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "core/Rasterizer.h"
 #include "core/Screen.h"
 #include "core/Shader.h"
@@ -8,6 +10,8 @@
 
 #include "tool/Profiler.h"
 #include "tool/Time.h"
+
+#include "component/Camera.h"
 
 namespace MiniRenderer
 {
@@ -22,6 +26,12 @@ namespace MiniRenderer
 		inline Rasterizer* GetPtrRasterizer();
 		inline Screen* GetPtrScreen();
 		inline Profiler* GetPtrProfiler();
+		inline Camera* GetPtrCamera();
+
+		Camera& GetCamera() { return *m_camera.get(); }
+
+		Camera& AddCamera();
+		void AddCamera(std::shared_ptr<Camera> camera);
 
 		void Run();
 	public:
@@ -34,5 +44,7 @@ namespace MiniRenderer
 		Rasterizer m_rasterizer;
 		Screen m_screen;
 		Profiler m_profiler;
+
+		std::shared_ptr<Camera> m_camera;
 	};
 }

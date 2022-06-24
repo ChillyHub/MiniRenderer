@@ -13,6 +13,7 @@ namespace MiniRenderer
 		T e[N];
 
 		constexpr Vec();
+		constexpr explicit Vec(T n);
 		constexpr explicit Vec(const T* p);
 		constexpr Vec(const Vec<N, T>& src);
 
@@ -20,6 +21,9 @@ namespace MiniRenderer
 		constexpr Vec(const std::initializer_list<U>& l);
 		template <size_t M, typename U>
 		constexpr explicit Vec(const Vec<M, U>& src);
+
+		template <typename U>
+		constexpr explicit Vec(const Vec<Type::Dynamic, U>& v);
 
 		constexpr T& operator[] (size_t i);
 		constexpr const T& operator[] (size_t i) const;
@@ -73,6 +77,7 @@ namespace MiniRenderer
 
 		constexpr Vec();
 		constexpr Vec(T _x, T _y);
+		constexpr explicit Vec(T n);
 		constexpr explicit Vec(const T* p);
 		constexpr Vec(const Vec<2, T>& src);
 
@@ -84,6 +89,9 @@ namespace MiniRenderer
 		constexpr Vec(const Vec<3, U>& src);
 		template <typename U>
 		constexpr Vec(const Vec<4, U>& src);
+
+		template <typename U>
+		constexpr explicit Vec(const Vec<Type::Dynamic, U>& v);
 
 		constexpr T& operator[] (size_t i);
 		constexpr const T& operator[] (size_t i) const;
@@ -139,6 +147,7 @@ namespace MiniRenderer
 		};
 
 		constexpr Vec();
+		constexpr explicit Vec(T n);
 		constexpr Vec(T _x, T _y, T _z);
 		constexpr explicit Vec(const T* p);
 		constexpr Vec(const Vec<3, T>& src);
@@ -151,6 +160,9 @@ namespace MiniRenderer
 		constexpr Vec(const Vec<3, U>& src);
 		template <typename U>
 		constexpr Vec(const Vec<4, U>& src);
+
+		template <typename U>
+		constexpr explicit Vec(const Vec<Type::Dynamic, U>& v);
 
 		constexpr T& operator[] (size_t i);
 		constexpr const T& operator[] (size_t i) const;
@@ -211,6 +223,7 @@ namespace MiniRenderer
 		};
 
 		constexpr Vec();
+		constexpr explicit Vec(T n);
 		constexpr Vec(T _x, T _y, T _z, T _w);
 		constexpr explicit Vec(const T* p);
 		constexpr Vec(const Vec<4, T>& src);
@@ -225,6 +238,9 @@ namespace MiniRenderer
 		constexpr explicit Vec(const Vec<3, U>& src, U _w);
 		template <typename U>
 		constexpr Vec(const Vec<4, U>& src);
+
+		template <typename U>
+		constexpr explicit Vec(const Vec<Type::Dynamic, U>& v);
 
 		constexpr T& operator[] (size_t i);
 		constexpr const T& operator[] (size_t i) const;
@@ -292,6 +308,7 @@ namespace MiniRenderer
 	public:
 		constexpr Vec();
 		constexpr Vec(size_t size);
+		constexpr Vec(size_t size, T n);
 		constexpr explicit Vec(size_t size, const T* p);
 		constexpr Vec(const Vec<Type::Dynamic, T>& src);
 

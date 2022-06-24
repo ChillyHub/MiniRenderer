@@ -1,5 +1,7 @@
 #pragma once
 
+#include "math/Math.h"
+
 namespace MiniRenderer
 {
 	enum WrapMode : unsigned int
@@ -28,12 +30,24 @@ namespace MiniRenderer
 		void* data;
 	};
 
-	class Texture2D : public Texture
+	class Sampler2D
+	{
+	public:
+		virtual Vec4 tex2D(Vec2 uv) = 0;
+	};
+
+	class SamplerCUBE
+	{
+	public:
+		virtual Vec4 texCUBE(Vec3 vec) = 0;
+	};
+
+	class Texture2D : public Texture, Sampler2D
 	{
 
 	};
 
-	class TextureCube : public Texture
+	class TextureCube : public Texture, SamplerCUBE
 	{
 
 	};

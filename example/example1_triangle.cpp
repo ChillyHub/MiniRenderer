@@ -38,6 +38,39 @@ int main()
 	mama = mama * mama;
 
 	std::cout << mama << std::endl;
+
+	try
+	{
+		VecX min{ 1, 2, 3, 4, 5 };
+		VecX max{ 5, 4, 3, 2, 1 };
+		std::cout << Math::Max(min, max) << std::endl;
+		std::cout << Math::Normailzed(min) << std::endl;
+		std::cout << Math::Dot(min, max) << std::endl;
+
+		Mat3 A{ 1, 2, -1, 2, 1, -2, -3, 1, 1 };
+		Mat3 L, U;
+		Math::LUDecompose(A, L, U);
+		std::cout << L << U << std::endl;
+
+		MatX B({ 1, 2, -1, 2, 1, -2, -3, 1, 1 }, 3, 3);
+		MatX LL, UU, PP;
+		Math::LUPDecompose(B, LL, UU, PP);
+		std::cout << "LUP\n" << LL << UU << PP  << PP * B << LL * UU << std::endl;
+		Math::LUDecompose(LL * UU, LL, UU);
+		std::cout << LL << UU;
+		Math::LUDecompose(PP * B, LL, UU);
+		std::cout << LL << UU << std::endl;
+
+		Mat3 LU{ 1, 2, -1, 2, 1, -2, -3, 1, 1 };
+		Mat3 LLL, UUU;
+		Math::LUDecompose(LU, LLL, UUU);
+		std::cout << Math::SolveLU(LLL, UUU, Vec3(3, 3, -6)) << std::endl;
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+		exit(EXIT_FAILURE);
+	}
 	
 	// Shader
 	

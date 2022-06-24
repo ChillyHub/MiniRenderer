@@ -6,6 +6,14 @@
 #include <cmath>
 #include <initializer_list>
 
+#define S(a) std::string(a)
+
+#ifdef _MSC_VER
+	#define _FUN_NAME_ __FUNCTION__
+#else
+	#define _FUN_NAME_ __func__
+#endif
+
 namespace MiniRenderer
 {
 	const float PI = 3.14159265358979323846264338327f;
@@ -20,6 +28,6 @@ namespace MiniRenderer
 
 	enum Type : size_t
 	{
-		Dynamic = 0x11111111
+		Dynamic = 0x0
 	};
 }

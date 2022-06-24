@@ -15,6 +15,7 @@ namespace MiniRenderer
 
 		inline constexpr Quat();
 		inline constexpr Quat(const Quat& src);
+		inline constexpr Quat(float _w, const Vec3& v);
 		inline constexpr Quat(float _w, float _i, float _j, float _k);
 
 		inline float norm() const;
@@ -40,6 +41,8 @@ namespace MiniRenderer
 	inline constexpr Quat operator-(const Quat& lhs, const Quat& rhs);
 	inline constexpr Quat operator*(const Quat& lhs, const Quat& rhs);
 	inline Quat operator/(const Quat& lhs, const Quat& rhs);
+
+	inline Vec3 operator*(const Quat& lhs, const Vec3& rhs); 
 
 	inline constexpr bool operator==(const Quat& lhs, const Quat& rhs);
 	inline constexpr bool operator!=(const Quat& lhs, const Quat& rhs);

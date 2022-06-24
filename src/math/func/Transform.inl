@@ -85,6 +85,14 @@ namespace MiniRenderer::Math
 		return t * Quat(cos, sin * vv.x, sin * vv.y, sin * vv.z);
 	}
 
+	template <typename T>
+	inline Vec<3, T> Rotate(const Quat& t, const Vec<3, T>& v)
+	{
+		Quat p = Quat(0.0f, Vec3(v));
+		Quat q = t * p * t.inverse();
+		return Vec<3, T>(q.x, q.y, q.z);
+	}
+
 	// Scale -------------------------------------------------------------------
 	// -------------------------------------------------------------------------
 	template <typename T>

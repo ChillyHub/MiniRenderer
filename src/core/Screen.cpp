@@ -14,6 +14,11 @@ namespace MiniRenderer
 	BITMAP Screen::s_viewBitmap = BITMAP();
 	Framebuffer* Screen::s_deviceFramebuffer = nullptr;
 
+	int Screen::s_keyPress[1024];
+	int Screen::s_mousePress[1024];
+	int Screen::s_wheelDelta = 0;
+	bool Screen::s_isHovered = true;
+
 	Renderer* Screen::m_renderer = nullptr;
 
 	Rasterizer* Renderer::GetPtrRasterizer()
@@ -24,6 +29,11 @@ namespace MiniRenderer
 	Profiler* Renderer::GetPtrProfiler()
 	{
 		return &m_profiler;
+	}
+
+	Camera* Renderer::GetPtrCamera()
+	{
+		return m_camera.get();
 	}
 	
 	void Screen::Init(const std::wstring& title, Renderer* renderer, int width, int height)
@@ -136,19 +146,74 @@ namespace MiniRenderer
 
 	LRESULT CALLBACK Screen::WinSunProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
+		short delta = 0;
+		
 		switch (uMsg)
 		{
 		case WM_SIZE:
 			ResizeWindow(hWnd);
-			break;
-		case WM_KEYDOWN:
-			// MessageBox(hWnd, TEXT("KEYDOWN"), TEXT("TITLE"), MB_OK);
 			break;
 		case WM_CLOSE:
 			s_runing = false;
 			break;
 		case WM_DESTROY:
 			PostQuitMessage(0);
+			break;
+		// Key buttom
+		case WM_KEYDOWN:
+			//std::cout << "Key down: " << wParam << std::endl;
+			s_keyPress[wParam & 1023] = 1;
+			break;
+		case WM_KEYUP:
+			//std::cout << "Key up: " << wParam << std::endl;
+			s_keyPress[wParam & 1023] = 0;
+			break;
+		// TODO: Mouse move
+		case WM_MOUSEHOVER:
+			//std::cout << "Mouse hovered: " << wParam << std::endl;
+			s_isHovered = true;
+			break;
+		case WM_MOUSELEAVE:
+			//std::cout << "Mouse leaved: " << wParam << std::endl;
+			s_isHovered = false;
+			break;
+		// Mouse button
+		case WM_LBUTTONDOWN:
+			//std::cout << "Mouse down: " << Mouse::Left << std::endl;
+			SetCapture(s_hWnd);
+			s_mousePress[Mouse::Left & 1023] = 1;
+			break;
+		case WM_MBUTTONDOWN:
+			//std::cout << "Mouse down: " << Mouse::Middle << std::endl;
+			SetCapture(s_hWnd);
+			s_mousePress[Mouse::Middle & 1023] = 1;
+			break;
+		case WM_RBUTTONDOWN:
+			//std::cout << "Mouse down: " << Mouse::Right << std::endl;
+			SetCapture(s_hWnd);
+			s_mousePress[Mouse::Right & 1023] = 1;
+			break;
+		case WM_LBUTTONUP:
+			//std::cout << "Mouse up: " << Mouse::Left << std::endl;
+			ReleaseCapture();
+			s_mousePress[Mouse::Left & 1023] = 0;
+			break;
+		case WM_MBUTTONUP:
+			//std::cout << "Mouse up: " << Mouse::Middle << std::endl;
+			ReleaseCapture();
+			s_mousePress[Mouse::Middle & 1023] = 0;
+			break;
+		case WM_RBUTTONUP:
+			//std::cout << "Mouse up: " << Mouse::Right << std::endl;
+			ReleaseCapture();
+			s_mousePress[Mouse::Right & 1023] = 0;
+			break;
+		// Mouse wheel
+		case WM_MOUSEWHEEL:
+			delta = HIWORD(wParam);
+			delta /= WHEEL_DELTA;
+			s_wheelDelta = delta;
+			//std::cout << "Mouse wheel: " << delta << std::endl;
 			break;
 		default:
 			return DefWindowProc(hWnd, uMsg, wParam, lParam);
@@ -184,6 +249,8 @@ namespace MiniRenderer
 		SelectObject(s_hDC, s_hBitmap);
 
 		m_renderer->GetPtrRasterizer()->SetBufferSize(windowWidth, windowHeight);
+		if (m_renderer->GetPtrCamera())
+			m_renderer->GetPtrCamera()->Resize(windowWidth, windowHeight);
 	}
 
 	void Screen::messageDispatch()

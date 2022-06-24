@@ -39,6 +39,7 @@ namespace MiniRenderer::Math
 	template <typename T> inline T Exp(T a) { return std::exp(a); }
 	template <typename T> inline T Log(T a) { return std::log(a); }
 	template <typename T> inline T Pow(T a, float p) { return std::pow(a, p); }
+	template <typename T> inline T Sqrt(T a) { return std::sqrt(a); }
 
 	template <typename T> inline T Asin(T a) { return std::asin(a); }
 	template <typename T> inline T Acos(T a) { return std::acos(a); }
@@ -132,7 +133,7 @@ namespace MiniRenderer::Math
 	{
 		auto norm = Norm(a);
 		if (norm == 0)
-			return Vec<N, T>(0);
+			return Vec<N, T>(T(0));
 		return a / norm;
 	}
 
@@ -228,27 +229,160 @@ namespace MiniRenderer::Math
 		return Clamp(a, 0.0f, 1.0f);
 	}
 
-	// Matrix ------------------------------------------------------
-	// -------------------------------------------------------------
 	template <typename T>
-	inline T Det(const Mat<1, 1, T>& a)
+	inline Vec<Type::Dynamic, T> Abs(const Vec<Type::Dynamic, T>& a)
 	{
-		return a[0][0];
+		Vec<Type::Dynamic, T> res(a.length());
+		for (size_t i = 0; i < a.length(); ++i)
+		{
+			res[i] = std::abs(a[i]);
+		}
+		return res;
 	}
 
 	template <typename T>
-	inline T Det(const Mat<2, 2, T>& a)
+	inline Vec<Type::Dynamic, T> Min(const Vec<Type::Dynamic, T>& a, const Vec<Type::Dynamic, T>& b)
 	{
-		return a[0][0] * a[1][1] - a[0][1] * a[1][0];
+		if (a.length() != b.length())
+			throw std::runtime_error(S("ERROR: [") + __func__ + "] Vectors length not equals");
+		
+		Vec<Type::Dynamic, T> res(a.length());
+		for (size_t i = 0; i < a.length(); ++i)
+		{
+			res[i] = std::min(a[i], b[i]);
+		}
+		return res;
 	}
 
-	template <size_t N, typename T>
-	inline T Det(const Mat<N, N, T>& a)
+	template <typename T>
+	inline Vec<Type::Dynamic, T> Max(const Vec<Type::Dynamic, T>& a, const Vec<Type::Dynamic, T>& b)
+	{
+		if (a.length() != b.length())
+			throw std::runtime_error(S("ERROR: [") + __func__ + "] Vectors length not equals");
+		
+		Vec<Type::Dynamic, T> res(a.length());
+		for (size_t i = 0; i < a.length(); ++i)
+		{
+			res[i] = std::max(a[i], b[i]);
+		}
+		return res;
+	}
+
+	template <typename T, typename U>
+	inline Vec<Type::Dynamic, T> Min(const Vec<Type::Dynamic, T>& a, U b)
+	{
+		Vec<Type::Dynamic, T> res(a.length());
+		for (size_t i = 0; i < a.length(); ++i)
+		{
+			res[i] = std::min(a[i], static_cast<T>(b));
+		}
+		return res;
+	}
+
+	template <typename T, typename U>
+	inline Vec<Type::Dynamic, T> Max(const Vec<Type::Dynamic, T>& a, U b)
+	{
+		Vec<Type::Dynamic, T> res(a.length());
+		for (size_t i = 0; i < a.length(); ++i)
+		{
+			res[i] = std::max(a[i], static_cast<T>(b));
+		}
+		return res;
+	}
+
+	template <typename T, typename U>
+	inline Vec<Type::Dynamic, T> Min(U a, const Vec<Type::Dynamic, T>& b)
+	{
+		Vec<Type::Dynamic, T> res(b.length());
+		for (size_t i = 0; i < b.length(); ++i)
+		{
+			res[i] = std::min(static_cast<T>(a), b[i]);
+		}
+		return res;
+	}
+
+	template <typename T, typename U>
+	inline Vec<Type::Dynamic, T> Max(U a, const Vec<Type::Dynamic, T>& b)
+	{
+		Vec<Type::Dynamic, T> res(b.length());
+		for (size_t i = 0; i < b.length(); ++i)
+		{
+			res[i] = std::max(static_cast<T>(a), b[i]);
+		}
+		return res;
+	}
+
+	template <typename T>
+	inline Vec<Type::Dynamic, T> Normailzed(const Vec<Type::Dynamic, T>& a)
+	{
+		auto norm = Norm(a);
+		if (norm == 0)
+			return Vec<Type::Dynamic, T>(a.length());
+		return a / norm;
+	}
+
+	template <typename T>
+	inline T Norm2(const Vec<Type::Dynamic, T>& a)
 	{
 		T sum = T();
-		for (size_t i = 0; i < N; ++i)
-			sum += a[0][i] * Cofactor(a, i, 0);
+		for (size_t i = 0; i < a.length(); ++i)
+			sum += a[i] * a[i];
 		return sum;
+	}
+
+	template <typename T>
+	inline Vec<Type::Dynamic, T> Floor(const Vec<Type::Dynamic, T>& a)
+	{
+		Vec<Type::Dynamic, T> res(a.length());
+		for (size_t i = 0; i < a.length(); ++i)
+			res[i] = std::floor(a[i]);
+		return res;
+	}
+
+	template <typename T>
+	inline Vec<Type::Dynamic, T> Ceil(const Vec<Type::Dynamic, T>& a)
+	{
+		Vec<Type::Dynamic, T> res(a.length());
+		for (size_t i = 0; i < a.length(); ++i)
+			res[i] = std::ceil(a[i]);
+		return res;
+	}
+
+	template <typename T>
+	inline T Dot(const Vec<Type::Dynamic, T>& a, const Vec<Type::Dynamic, T>& b)
+	{
+		if (a.length() != b.length())
+			throw std::runtime_error(S("ERROR: [") + __func__ + "] Vectors length not equals");
+		
+		T sum = T();
+		for (size_t i = 0; i < a.length(); ++i)
+			sum += a[i] * b[i];
+		return sum;
+	}
+
+	template <typename T>
+	inline T Cross(const Vec<Type::Dynamic, T>& a, const Vec<Type::Dynamic, T>& b)
+	{
+		if (a.length() == 2 && b.length() == 2)
+			return Cross(Vec<2, T>(a), Vec<2, T>(b));
+		if (a.length() == 3 && b.length() == 3)
+			return Cross(Vec<3, T>(a), Vec<3, T>(b));
+		if (a.length() == 4 && b.length() == 4)
+			return Cross(Vec<4, T>(a), Vec<4, T>(b));
+		
+		throw std::runtime_error(S("ERROR: [") + __func__ + "] Vectors length not match");
+		return T();
+	}
+
+	// Matrix ------------------------------------------------------
+	// -------------------------------------------------------------
+	template <size_t N, typename T>
+	inline Mat<N, 1, T> Transpose(const Vec<N, T>& a)
+	{
+		Mat<N, 1, T> res;
+		for (size_t i = 0; i < N; ++i)
+			res[0][i] = a[i];
+		return res;
 	}
 
 	template <size_t M, size_t N, typename T>
@@ -267,37 +401,27 @@ namespace MiniRenderer::Math
 		return Adjugate(a) / Det(a);
 	}
 
-	template <size_t M, size_t N, typename T>
-	inline T Cofactor(const Mat<M, N, T>& src, size_t m, size_t n)
+	template <typename T>
+	inline Mat<Type::Dynamic, Type::Dynamic, T> Transpose(const Vec<Type::Dynamic, T>& a)
 	{
-		assert(m < M && n < N);
-		Mat<M - 1, N - 1, T> res;
-		size_t i = 0;
-		for (size_t a = 0; a < N; ++a)
-		{
-			size_t j = 0;
-			if (a == n)
-				continue;
-			for (size_t b = 0; b < M; ++b)
-			{
-				if (b == m)
-					continue;
-				res[i][j] = src[a][b];
-				++j;
-			}
-			++i;
-		}
-		return ((m + n) % 2 ? -1 : 1) * Det(res);
+		const size_t N = a.length();
+
+		Mat<Type::Dynamic, Type::Dynamic, T> res(N, 1);
+		for (size_t i = 0; i < N; ++i)
+			res[0][i] = a[i];
+		return res;
 	}
 
-	template <size_t M, size_t N, typename T>
-	inline Mat<N, M, T> Adjugate(const Mat<M, N, T>& a)
+	template <typename T>
+	inline Mat<Type::Dynamic, Type::Dynamic, T> Transpose(const Mat<Type::Dynamic, Type::Dynamic, T>& a)
 	{
-		Mat<M, N, T> res;
-		for (size_t i = 0; i < N; ++i)
-			for (size_t j = 0; j < M; ++j)
-				res[i][j] = Cofactor(a, j, i);
-		return Transpose(res);
+		const size_t M = a.col_len(), N = a.row_len();
+		
+		Mat<Type::Dynamic, Type::Dynamic, T> res(N, M);
+		for (size_t i = 0; i < M; ++i)
+			for (size_t j = 0; j < N; ++j)
+				res[i][j] = a[j][i];
+		return res;
 	}
 
 	// Quaternion --------------------------------------------------
@@ -382,5 +506,73 @@ namespace MiniRenderer::Math
 	Quat Inverse(const Quat& a)
 	{
 		return a.inverse();
+	}
+
+	Quat MatToQuat(const Mat3& a)
+	{
+		Quat q;
+
+		float fourWSquaredMinus1 = a[0][0] + a[1][1] + a[2][2];
+		float fourXSquaredMinus1 = a[0][0] - a[1][1] - a[2][2];
+		float fourYSquaredMinus1 = a[1][1] - a[0][0] - a[2][2];
+		float fourZSquaredMinus1 = a[2][2] - a[0][0] - a[1][1];
+
+		int biggestIndex = 0;
+		float fourBiggestSquaredMinus1 = fourWSquaredMinus1;
+		if (fourXSquaredMinus1 > fourBiggestSquaredMinus1)
+		{
+			fourBiggestSquaredMinus1 = fourXSquaredMinus1;
+			biggestIndex = 1;
+		}
+		else if (fourYSquaredMinus1 > fourBiggestSquaredMinus1)
+		{
+			fourBiggestSquaredMinus1 = fourYSquaredMinus1;
+			biggestIndex = 2;
+		}
+		else if (fourZSquaredMinus1 > fourBiggestSquaredMinus1)
+		{
+			fourBiggestSquaredMinus1 = fourZSquaredMinus1;
+			biggestIndex = 3;
+		}
+
+		float biggestVal = Sqrt(fourBiggestSquaredMinus1 + 1.0f) * 0.5f;
+		float mult = 0.25f / biggestVal;
+
+		switch (biggestIndex)
+		{
+		case 0:
+			q.w = biggestVal;
+			q.x = (a[1][2] - a[2][1]) * mult;
+			q.y = (a[2][0] - a[0][2]) * mult;
+			q.z = (a[0][1] - a[1][0]) * mult;
+			break;
+		case 1:
+			q.x = biggestVal;
+			q.w = (a[1][2] - a[2][1]) * mult;
+			q.y = (a[0][1] + a[1][0]) * mult;
+			q.z = (a[2][0] + a[0][2]) * mult;
+			break;
+		case 2:
+			q.y = biggestVal;
+			q.w = (a[2][0] - a[0][2]) * mult;
+			q.x = (a[0][1] + a[1][0]) * mult;
+			q.z = (a[1][2] + a[2][1]) * mult;
+			break;
+		case 3:
+			q.z = biggestVal;
+			q.w = (a[0][1] - a[1][0]) * mult;
+			q.x = (a[2][0] + a[0][2]) * mult;
+			q.y = (a[1][2] + a[2][1]) * mult;
+			break;
+		default:
+			break;
+		}
+
+		return q;
+	}
+
+	Quat MatToQuat(const Mat4& a)
+	{
+		return MatToQuat(Mat3(a));
 	}
 }

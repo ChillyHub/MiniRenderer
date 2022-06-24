@@ -114,7 +114,7 @@ namespace MiniRenderer
 				float b = sb / s;
 				float c = sc / s;
 
-				// TODO: deepth test
+				// TODO: deepth test (Early-Z)
 				float depth = a * vm[0].depth + b * vm[1].depth + c * vm[2].depth;
 
 				if (depth < m_depthbuffer.GetVal(x, y))
@@ -135,6 +135,10 @@ namespace MiniRenderer
 
 				// TODO: fragment shader
 				Vec4 color = pass.frag(vertexOut);
+
+				// TODO: stencil test
+
+				// TODO: alpha test
 
 				// TODO: set pixel
 				m_framebuffer.SetPixel(x, y, color);

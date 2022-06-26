@@ -5,7 +5,8 @@
 namespace MiniRenderer
 {
 	template SHADER_DATA_TEMPLATE
-	void Rasterizer::DrawCall(VertexInput* vertices, int vertexCount, const Shader SHADER_DATA_TYPE& shader, VertexIndex* indices)
+	void Rasterizer::DrawCall(const Shader SHADER_DATA_TYPE& shader, VertexInput* vertices, int vertexCount,
+			VertexIndex* indices, int indexCount)
 	{
 		m_framebuffer.Flush();
 		m_depthbuffer.Flush();
@@ -14,12 +15,50 @@ namespace MiniRenderer
 		{
 			if (indices == nullptr)
 			{
-				for (int i = 0; i < vertexCount; i += 3)
+				if (RenderDataType == DataType::Triangles)
 				{
-					drawPrimitive<VertexInput, VertexOutput, VertexShader, FragmentShader, VertexUniform>(&(vertices[i]), pass, 0);
+					for (int i = 0; i < vertexCount; i += 3)
+					{
+						drawPrimitive<VertexInput, VertexOutput, VertexShader, FragmentShader, VertexUniform>(&(vertices[i]), pass, 0);
+					}
+				}
+				else if (RenderDataType == DataType::TriangleStrip)
+				{
+					for (int i = 0; i < vertexCount - 2; i++)
+					{
+						drawPrimitive<VertexInput, VertexOutput, VertexShader, FragmentShader, VertexUniform>(&(vertices[i]), pass, 0);
+					}
 				}
 			}
+			else
+			{
+				if (RenderDataType == DataType::Triangles)
+				{
+					for (int i = 0; i < indexCount; i += 3)
+					{
+						VertexInput v[3] = {
+							vertices[indices[i + 0]],
+							vertices[indices[i + 1]],
+							vertices[indices[i + 2]]
+						};
 
+						drawPrimitive<VertexInput, VertexOutput, VertexShader, FragmentShader, VertexUniform>(&(v[0]), pass, 0);
+					}
+				}
+				else if (RenderDataType == DataType::TriangleStrip)
+				{
+					for (int i = 0; i < indexCount - 2; i++)
+					{
+						VertexInput v[3] = {
+							vertices[indices[i + 0]],
+							vertices[indices[i + 1]],
+							vertices[indices[i + 2]]
+						};
+
+						drawPrimitive<VertexInput, VertexOutput, VertexShader, FragmentShader, VertexUniform>(&(v[0]), pass, 0);
+					}
+				}
+			}
 		}
 	}
 
@@ -145,4 +184,4 @@ namespace MiniRenderer
 			}
 		}
 	}
-}
+} // namespace MiniRenderer

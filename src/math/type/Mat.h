@@ -448,6 +448,8 @@ namespace MiniRenderer
 	Vec<N, T> operator*(const Mat<M, N, T>& l, const Vec<N, T>& r);
 	template <size_t M, size_t K, size_t N, typename T>
 	Mat<M, N, T> operator*(const Mat<M, K, T>& l, const Mat<K, N, T>& r);
+	template <size_t M, size_t N, typename T>
+	Mat<M, N, T> operator*(const Vec<M, T>& l, const Mat<1, N, T>& r);
 
 	template <size_t M, size_t N, typename T>
 	constexpr bool operator==(const Mat<M, N, T>& lhs, const Mat<M, N, T>& rhs);
@@ -487,6 +489,8 @@ namespace MiniRenderer
 	Vec<Type::Dynamic, T> operator*(const Mat<Type::Dynamic, Type::Dynamic, T>& l, const Vec<Type::Dynamic, T>& r);
 	template <typename T>
 	Mat<Type::Dynamic, Type::Dynamic, T> operator*(const Mat<Type::Dynamic, Type::Dynamic, T>& l, const Mat<Type::Dynamic, Type::Dynamic, T>& r);
+	template <typename T>
+	Mat<Type::Dynamic, Type::Dynamic, T> operator*(const Vec<Type::Dynamic, T>& l, const Mat<Type::Dynamic, Type::Dynamic, T>& r);
 
 	template <typename T>
 	constexpr bool operator==(const Mat<Type::Dynamic, Type::Dynamic, T>& lhs, const Mat<Type::Dynamic, Type::Dynamic, T>& rhs);

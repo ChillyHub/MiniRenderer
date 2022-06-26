@@ -377,11 +377,11 @@ namespace MiniRenderer::Math
 	// Matrix ------------------------------------------------------
 	// -------------------------------------------------------------
 	template <size_t N, typename T>
-	inline Mat<N, 1, T> Transpose(const Vec<N, T>& a)
+	inline Mat<1, N, T> Transpose(const Vec<N, T>& a)
 	{
-		Mat<N, 1, T> res;
+		Mat<1, N, T> res;
 		for (size_t i = 0; i < N; ++i)
-			res[0][i] = a[i];
+			res[i][0] = a[i];
 		return res;
 	}
 
@@ -395,20 +395,14 @@ namespace MiniRenderer::Math
 		return res;
 	}
 
-	template <size_t N, typename T>
-	inline Mat<N, N, T> Inverse(const Mat<N, N, T>& a)
-	{
-		return Adjugate(a) / Det(a);
-	}
-
 	template <typename T>
 	inline Mat<Type::Dynamic, Type::Dynamic, T> Transpose(const Vec<Type::Dynamic, T>& a)
 	{
 		const size_t N = a.length();
 
-		Mat<Type::Dynamic, Type::Dynamic, T> res(N, 1);
+		Mat<Type::Dynamic, Type::Dynamic, T> res(1, N);
 		for (size_t i = 0; i < N; ++i)
-			res[0][i] = a[i];
+			res[i][0] = a[i];
 		return res;
 	}
 
@@ -575,4 +569,4 @@ namespace MiniRenderer::Math
 	{
 		return MatToQuat(Mat3(a));
 	}
-}
+} // namespace MiniRenderer

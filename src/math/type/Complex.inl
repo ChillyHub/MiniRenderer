@@ -282,14 +282,26 @@ namespace MiniRenderer
 		return !(lhs == rhs);
 	}
 
+	template <typename T, typename U>
+	inline constexpr bool operator<(const Complex<T>& lhs, U rhs)
+	{
+		return lhs.real < rhs && lhs.imag < rhs;
+	}
+
+	template <typename T, typename U>
+	inline constexpr bool operator>(const Complex<T>& lhs, U rhs)
+	{
+		return lhs.real > rhs&& lhs.imag > rhs;
+	}
+
 	template <typename T>
 	inline std::ostream& operator<<(std::ostream& os, const Complex<T>& rhs)
 	{
-		os << "(" << rhs.real;
+		os << "(" << OUTNUM(rhs.real);
 		if (rhs.imag < 0)
-			os << " - " << -rhs.imag << "i)";
+			os << " - " << OUTNUM(- rhs.imag) << "i)";
 		else
-			os << " + " << rhs.imag << "i)";
+			os << " + " << OUTNUM(rhs.imag) << "i)";
 		return os;
 	}
 } // namespace MiniRenderer

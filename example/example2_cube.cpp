@@ -66,7 +66,7 @@ int main()
 		unif.view = camera.GetViewMat();
 		unif.proj = camera.GetProjectMat();
 
-		renderer.DrawCall(vertices, 6, shader);
+		renderer.DrawCall(shader, vertices, 6);
 	};
 
 	renderer.Run();

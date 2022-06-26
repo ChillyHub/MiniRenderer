@@ -41,25 +41,17 @@ namespace MiniRenderer
 		template <typename U>
 		constexpr Vec<N, T>& operator+= (U rhs);
 		template <typename U>
-		constexpr Vec<N, T>& operator+= (const Vec<1, U>& rhs);
-		template <typename U>
 		constexpr Vec<N, T>& operator+= (const Vec<N, U>& rhs);
 		template <typename U>
 		constexpr Vec<N, T>& operator-= (U rhs);
-		template <typename U>
-		constexpr Vec<N, T>& operator-= (const Vec<1, U>& rhs);
 		template <typename U>
 		constexpr Vec<N, T>& operator-= (const Vec<N, U>& rhs);
 		template <typename U>
 		constexpr Vec<N, T>& operator*= (U rhs);
 		template <typename U>
-		constexpr Vec<N, T>& operator*= (const Vec<1, U>& rhs);
-		template <typename U>
 		constexpr Vec<N, T>& operator*= (const Vec<N, U>& rhs);
 		template <typename U>
 		constexpr Vec<N, T>& operator/= (U rhs);
-		template <typename U>
-		constexpr Vec<N, T>& operator/= (const Vec<1, U>& rhs);
 		template <typename U>
 		constexpr Vec<N, T>& operator/= (const Vec<N, U>& rhs);
 	};

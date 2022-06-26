@@ -161,50 +161,40 @@ namespace MiniRenderer
 			break;
 		// Key buttom
 		case WM_KEYDOWN:
-			//std::cout << "Key down: " << wParam << std::endl;
 			s_keyPress[wParam & 1023] = 1;
 			break;
 		case WM_KEYUP:
-			//std::cout << "Key up: " << wParam << std::endl;
 			s_keyPress[wParam & 1023] = 0;
 			break;
 		// TODO: Mouse move
 		case WM_MOUSEHOVER:
-			//std::cout << "Mouse hovered: " << wParam << std::endl;
 			s_isHovered = true;
 			break;
 		case WM_MOUSELEAVE:
-			//std::cout << "Mouse leaved: " << wParam << std::endl;
 			s_isHovered = false;
 			break;
 		// Mouse button
 		case WM_LBUTTONDOWN:
-			//std::cout << "Mouse down: " << Mouse::Left << std::endl;
 			SetCapture(s_hWnd);
 			s_mousePress[Mouse::Left & 1023] = 1;
 			break;
 		case WM_MBUTTONDOWN:
-			//std::cout << "Mouse down: " << Mouse::Middle << std::endl;
 			SetCapture(s_hWnd);
 			s_mousePress[Mouse::Middle & 1023] = 1;
 			break;
 		case WM_RBUTTONDOWN:
-			//std::cout << "Mouse down: " << Mouse::Right << std::endl;
 			SetCapture(s_hWnd);
 			s_mousePress[Mouse::Right & 1023] = 1;
 			break;
 		case WM_LBUTTONUP:
-			//std::cout << "Mouse up: " << Mouse::Left << std::endl;
 			ReleaseCapture();
 			s_mousePress[Mouse::Left & 1023] = 0;
 			break;
 		case WM_MBUTTONUP:
-			//std::cout << "Mouse up: " << Mouse::Middle << std::endl;
 			ReleaseCapture();
 			s_mousePress[Mouse::Middle & 1023] = 0;
 			break;
 		case WM_RBUTTONUP:
-			//std::cout << "Mouse up: " << Mouse::Right << std::endl;
 			ReleaseCapture();
 			s_mousePress[Mouse::Right & 1023] = 0;
 			break;
@@ -213,7 +203,6 @@ namespace MiniRenderer
 			delta = HIWORD(wParam);
 			delta /= WHEEL_DELTA;
 			s_wheelDelta = delta;
-			//std::cout << "Mouse wheel: " << delta << std::endl;
 			break;
 		default:
 			return DefWindowProc(hWnd, uMsg, wParam, lParam);
@@ -271,9 +260,9 @@ namespace MiniRenderer
 		int i = 0;
 		Vec4* pixel = s_deviceFramebuffer->GetData();
 		for (unsigned int* it = (unsigned int*)s_viewBitmap.bmBits; i < s_width * s_height; it++) {
-			int r = (int)(pixel->r * 255.0f);
-			int g = (int)(pixel->g * 255.0f);
-			int b = (int)(pixel->b * 255.0f);
+			int r = Math::Clamp((int)(pixel->r * 255.0f), 0, 255);
+			int g = Math::Clamp((int)(pixel->g * 255.0f), 0, 255);
+			int b = Math::Clamp((int)(pixel->b * 255.0f), 0, 255);
 			*it = (r << 16) | (g << 8) | b;
 			pixel++;
 			i++;

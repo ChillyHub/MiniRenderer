@@ -15,4 +15,4 @@ namespace MiniRenderer
 	//	m_pass.push_back(pass);
 	//}
 
-}
+} // namespace MiniRenderer

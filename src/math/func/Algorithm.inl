@@ -29,7 +29,7 @@ namespace MiniRenderer::Math
 		for (size_t k = 0; k < N; ++k)
 		{
 			if (AA[k][k] == T(0))
-				throw std::runtime_error(S("ERROR: [") + __func__ + "] Matrix A can not LU decompose");
+				throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix A can not LU decompose");
 
 			L[k][k] = T(1);
 			U[k][k] = AA[k][k];
@@ -55,7 +55,7 @@ namespace MiniRenderer::Math
 		const size_t N = A.col_len();
 		
 		if (!IsSquareMat(A))
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Matrix A is not a square matrix");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix A is not a square matrix");
 
 		Mat<Type::Dynamic, Type::Dynamic, T> AA(A);
 		L = std::move(Mat<Type::Dynamic, Type::Dynamic, T>(N, N));
@@ -63,7 +63,7 @@ namespace MiniRenderer::Math
 		for (size_t k = 0; k < N; ++k)
 		{
 			if (AA[k][k] == T(0))
-				throw std::runtime_error(S("ERROR: [") + __func__ + "] Matrix A can not LU decompose");
+				throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix A can not LU decompose");
 			
 			L[k][k] = T(1);
 			U[k][k] = AA[k][k];
@@ -104,7 +104,7 @@ namespace MiniRenderer::Math
 			}
 
 			if (p == T(0))
-				throw std::runtime_error(S("ERROR: [") + __func__ + "] Matrix A is a singular matrix, can not decompose");
+				throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix A is a singular matrix, can not decompose");
 
 			if (k != kmax)
 			{
@@ -151,7 +151,7 @@ namespace MiniRenderer::Math
 		const size_t N = A.col_len();
 
 		if (!IsSquareMat(A))
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Matrix A is not a square matrix");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix A is not a square matrix");
 		
 		Mat<Type::Dynamic, Type::Dynamic, T> AA(A);
 		Vec<Type::Dynamic, size_t> order(N);
@@ -172,7 +172,7 @@ namespace MiniRenderer::Math
 			}
 
 			if (p == T(0))
-				throw std::runtime_error(S("ERROR: [") + __func__ + "] Matrix A is a singular matrix, can not decompose");
+				throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix A is a singular matrix, can not decompose");
 
 			if (k != kmax)
 			{
@@ -213,6 +213,332 @@ namespace MiniRenderer::Math
 		}
 	}
 
+	template <size_t M, size_t N, typename T>
+	inline void QRDecompose(const Mat<M, N, T>& A, Mat<M, M, T>& Q, Mat<M, N, T>& R)
+	{
+		QRDecompose_HouseholderReflection(A, Q, R);
+	}
+
+	template <typename T>
+	inline void QRDecompose(const Mat<Type::Dynamic, Type::Dynamic, T>& A,
+		Mat<Type::Dynamic, Type::Dynamic, T>& Q, Mat<Type::Dynamic, Type::Dynamic, T>& R)
+	{
+		QRDecompose_HouseholderReflection(A, Q, R);
+	}
+
+	template <size_t M, size_t N, typename T>
+	inline void QRDecompose_HouseholderReflection(const Mat<M, N, T>& A, Mat<M, M, T>& Q, Mat<M, N, T>& R)
+	{
+		Q = Mat<M, M, T>(T(1));
+		R = Mat<M, N, T>(A);
+		for (size_t i = 0; i < N; ++i)
+		{
+			Vec<M, T> w, x;
+			for (size_t j = i; j < M; ++j)
+				x[j] = R[i][j];
+			w[i] = Norm(x);
+
+			Vec<M, T> v = w - x;
+
+			T vtv = Dot(v, v);
+			Mat<M, M, T> H(T(1));
+			if (vtv != T(0))
+			{
+				Mat<M, M, T> P = v * Transpose(v) / vtv;
+				H -= P * T(2);
+			}
+
+			Q = Q * H;
+			R = H * R;
+		}
+	}
+
+	template <typename T>
+	inline void QRDecompose_HouseholderReflection(const Mat<Type::Dynamic, Type::Dynamic, T>& A,
+		Mat<Type::Dynamic, Type::Dynamic, T>& Q, Mat<Type::Dynamic, Type::Dynamic, T>& R)
+	{
+		const size_t M = A.col_len(), N = A.row_len();
+
+		Q = Mat<Type::Dynamic, Type::Dynamic, T>(T(1), M, M);
+		R = Mat<Type::Dynamic, Type::Dynamic, T>(A);
+		for (size_t i = 0; i < N; ++i)
+		{
+			Vec<Type::Dynamic, T> w(M - i), x(M - i);
+			for (size_t j = 0; j < M - i; ++j)
+				x[j] = R[i][i + j];
+			w[0] = Norm(x);
+
+			Vec<Type::Dynamic, T> v = w - x;
+
+			T vtv = Dot(v, v);
+			Mat<Type::Dynamic, Type::Dynamic, T> H(T(1), M, M);
+			if (vtv != T(0))
+			{
+				Mat<Type::Dynamic, Type::Dynamic, T> P = v * Transpose(v) / vtv;
+				for (size_t j = i; j < M; ++j)
+				{
+					for (size_t k = i; k < M; ++k)
+					{
+						H[j][k] -= P[j - i][k - i] * T(2);
+					}
+				}
+			}
+
+			Q = Q * H;
+			R = H * R;
+		}
+	}
+
+	template <size_t M, size_t N, typename T>
+	inline void QRDecompose_GivensRotation(const Mat<M, N, T>& A, Mat<M, M, T>& Q, Mat<M, N, T>& R)
+	{
+		Q = Mat<M, M, T>(T(1));
+		R = Mat<M, N, T>(A);
+		for (size_t i = 0; i < N; ++i)
+		{
+			for (size_t j = M - 1; j > i; --j)
+			{
+				T t, s, c;
+				if (R[i][j] == T(0))
+				{
+					continue;
+				}
+				else if (R[i][j - 1] == T(0))
+				{
+					s = T(1);
+					c = T(0);
+				}
+				else if (Abs(R[i][j - 1]) < Abs(R[i][j]))
+				{
+					t = R[i][j - 1] / R[i][j];
+					s = T(1) / std::sqrt(T(1) + t * t);
+					c = s * t;
+				}
+				else
+				{
+					t = R[i][j] / R[i][j - 1];
+					c = T(1) / std::sqrt(T(1) + t * t);
+					s = c * t;
+				}
+
+				Mat<M, M, T> GT(T(1));
+				GT[j - 1][j - 1] = c;
+				GT[j - 1][j] = s;
+				GT[j][j - 1] = -s;
+				GT[j][j] = c;
+				Q = Q * GT;
+
+				for (size_t k = 0; k < N; ++k)
+				{
+					T o = R[k][j - 1], p = R[k][j];
+					R[k][j - 1] = c * o + s * p;
+					R[k][j] = -s * o + c * p;
+				}
+			}
+		}
+	}
+
+	template <typename T>
+	inline void QRDecompose_GivensRotation(const Mat<Type::Dynamic, Type::Dynamic, T>& A,
+		Mat<Type::Dynamic, Type::Dynamic, T>& Q, Mat<Type::Dynamic, Type::Dynamic, T>& R)
+	{
+		const size_t M = A.col_len(), N = A.row_len();
+		
+		Q = Mat<Type::Dynamic, Type::Dynamic, T>(T(1), M, M);
+		R = Mat<Type::Dynamic, Type::Dynamic, T>(A);
+		for (size_t i = 0; i < N; ++i)
+		{
+			for (size_t j = M - 1; j > i; --j)
+			{
+				T t, s, c;
+				if (R[i][j] == T(0))
+				{
+					continue;
+				}
+				else if (R[i][j - 1] == T(0))
+				{
+					s = T(1);
+					c = T(0);
+				}
+				else if (Abs(R[i][j - 1]) < Abs(R[i][j]))
+				{
+					t = R[i][j - 1] / R[i][j];
+					s = T(1) / std::sqrt(T(1) + t * t);
+					c = s * t;
+				}
+				else
+				{
+					t = R[i][j] / R[i][j - 1];
+					c = T(1) / std::sqrt(T(1) + t * t);
+					s = c * t;
+				}
+
+				Mat<Type::Dynamic, Type::Dynamic, T> GT(T(1), M, M);
+				GT[j - 1][j - 1] = c;
+				GT[j - 1][j] = s;
+				GT[j][j - 1] = -s;
+				GT[j][j] = c;
+				Q = Q * GT;
+
+				for (size_t k = 0; k < N; ++k)
+				{
+					T o = R[k][j - 1], p = R[k][j];
+					R[k][j - 1] = c * o + s * p;
+					R[k][j] = -s * o + c * p;
+				}
+			}
+		}
+	}
+
+	template <size_t M, size_t N, typename T>
+	inline void QRDecompose_ModifiedGramSchmidtOrthogonalization(const Mat<M, N, T>& A, Mat<M, M, T>& Q, Mat<M, N, T>& R)
+	{
+		for (size_t i = 0; i < N; ++i)
+		{
+			// Number of iterations M = 1
+			Vec<M, T> y = A[i];
+			for (size_t j = 0; j < i; ++j)
+			{
+				R[i][j] = Dot(Q[j], y);
+				y -= R[i][j] * Q[j];
+			}
+			R[i][i] = Norm(y);
+			Q[i] = y / R[i][i];
+		}
+	}
+
+	template <typename T>
+	inline void QRDecompose_ModifiedGramSchmidtOrthogonalization(const Mat<Type::Dynamic, Type::Dynamic, T>& A,
+		Mat<Type::Dynamic, Type::Dynamic, T>& Q, Mat<Type::Dynamic, Type::Dynamic, T>& R)
+	{
+		const size_t M = A.col_len(), N = A.row_len();
+		
+		Q = Mat<Type::Dynamic, Type::Dynamic, T>(T(0), M, M);
+		R = Mat<Type::Dynamic, Type::Dynamic, T>(T(0), M, N);
+		for (size_t i = 0; i < N; ++i)
+		{
+			// Number of iterations M = 1
+			Vec<Type::Dynamic, T> y = A[i];
+			for (size_t j = 0; j < i; ++j)
+			{
+				R[i][j] = Dot(Q[j], y);
+				y -= R[i][j] * Q[j];
+			}
+			R[i][i] = Norm(y);
+			Q[i] = y / R[i][i];
+		}
+	}
+
+	template <size_t N, typename T>
+	inline Vec<N + 1, T> FindEigenByTridiagonalMat(const Mat<N, N, T>& A)
+	{
+		if (!IsTridiagonalMat(A))
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix A is not a tridiagonal matrix");
+
+		Vec<N, T> b;
+		Vec<N - 1, T> a, c;
+		for (size_t i = 0; i < N; ++i)
+			b[i] = A[i][i];
+		for (size_t i = 0; i < N - 1; ++i)
+		{
+			a[i] = A[i][i + 1];
+			c[i] = A[i + 1][i];
+		}
+
+		Vec<N + 1, T> res, ores, oores;
+		ores[0] = -b[0];
+		ores[1] = T(1);
+		oores[0] = T(1);
+		for (size_t i = 1; i < N; ++i)
+		{
+			T ac = a[i - 1] * c[i - 1];
+			res[0] = -b[i] * ores[0] - ac * oores[0];
+			for (size_t j = 1; j <= i; ++j)
+			{
+				res[j] = -b[i] * ores[j] + ores[j - 1] - ac * oores[j];
+			}
+
+			for (size_t j = 0; j < i; ++j)
+				oores[j] = ores[j];
+			for (size_t j = 0; j <= i; ++j)
+				ores[j] = res[j];
+			oores[i] = T(1);
+			ores[i + 1] = T(1);
+		}
+		res[N] = T(1);
+
+		Vec<N + 1, T> v;
+		for (size_t i = 0; i <= N; ++i)
+			v[i] = res[N - i];
+		return v;
+	}
+
+	template <typename T>
+	inline Vec<Type::Dynamic, T> FindEigenByTridiagonalMat(const Mat<Type::Dynamic, Type::Dynamic, T>& A)
+	{
+		const size_t N = A.col_len();
+
+		if (!IsTridiagonalMat(A))
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix A is not a tridiagonal matrix");
+
+		Vec<Type::Dynamic, T> b(N);
+		Vec<Type::Dynamic, T> a(N - 1), c(N - 1);
+		for (size_t i = 0; i < N; ++i)
+			b[i] = A[i][i];
+		for (size_t i = 0; i < N - 1; ++i)
+		{
+			a[i] = A[i][i + 1];
+			c[i] = A[i + 1][i];
+		}
+
+		Vec<Type::Dynamic, T> res(N + 1);
+		Vec<Type::Dynamic, T> ores(N + 1);
+		Vec<Type::Dynamic, T> oores(N + 1);
+		ores[0] = -b[0];
+		ores[1] = T(1);
+		oores[0] = T(1);
+		for (size_t i = 1; i < N; ++i)
+		{
+			T ac = a[i - 1] * c[i - 1];
+			res[0] = -b[i] * ores[0] - ac * oores[0];
+			for (size_t j = 1; j <= i; ++j)
+			{
+				res[j] = -b[i] * ores[j] + ores[j - 1] - ac * oores[j];
+			}
+
+			for (size_t j = 0; j < i; ++j)
+				oores[j] = ores[j];
+			for (size_t j = 0; j <= i; ++j)
+				ores[j] = res[j];
+			oores[i] = T(1);
+			ores[i + 1] = T(1);
+		}
+		res[N] = T(1);
+
+		Vec<Type::Dynamic, T> v(N + 1);
+		for (size_t i = 0; i <= N; ++i)
+			v[i] = res[N - i];
+		return v;
+	}
+
+	template <size_t N, typename T>
+	inline Vec<N, T> Solve(const Mat<N, N, T>& A, const Vec<N, T>& b)
+	{
+		Mat<N, N, T> L, U, P;
+		LUPDecompose(A, L, U, P);
+		return SolveLUP(L, U, P, b);
+	}
+
+	template <typename T>
+	inline Vec<Type::Dynamic, T> Solve(const Mat<Type::Dynamic, Type::Dynamic, T>& A, const Vec<Type::Dynamic, T>& b)
+	{
+		const size_t N = A.col_len();
+		
+		Mat<Type::Dynamic, Type::Dynamic, T> L(N, N), U(N, N), P(N, N);
+		LUPDecompose(A, L, U, P);
+		return SolveLUP(L, U, P, b);
+	}
+
 	template <size_t N, typename T>
 	inline Vec<N, T> SolveLU(const Mat<N, N, T>& L, const Mat<N, N, T>& U, const Vec<N, T>& b)
 	{
@@ -246,7 +572,7 @@ namespace MiniRenderer::Math
 		const size_t N = L.col_len();
 
 		if (!IsSquareMat(L) || !IsSquareMat(U))
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Matrix L or U are not correct matrix");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix L or U are not square matrix");
 		
 		Vec<Type::Dynamic, T> c(N);
 		c[0] = b[0];
@@ -270,12 +596,83 @@ namespace MiniRenderer::Math
 		return x;
 	}
 
+	template <size_t N, typename T>
+	inline Vec<N, T> SolveLUP(const Mat<N, N, T>& L, const Mat<N, N, T>& U, const Mat<N, N, T>& P, const Vec<N, T>& b)
+	{
+		return SolveLU(L, U, P * b);
+	}
+
+	template <typename T>
+	inline Vec<Type::Dynamic, T> SolveLUP(const Mat<Type::Dynamic, Type::Dynamic, T>& L,
+		const Mat<Type::Dynamic, Type::Dynamic, T>& U,
+		const Mat<Type::Dynamic, Type::Dynamic, T>& P,
+		const Vec<Type::Dynamic, T>& b)
+	{
+		if (!IsSquareMat(P))
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix P are not square matrix");
+
+		return SolveLU(L, U, P * b);
+	}
+
+	template <size_t N, typename T>
+	inline Vec<N, T> SolveQR(const Mat<N, N, T>& Q, const Mat<N, N, T>& R, const Vec<N, T>& b)
+	{
+		Vec<N, T> c;
+		Mat<N, N, T> L, U, P;
+		LUPDecompose(Q, L, U, P);
+		c = SolveLUP(L, U, P, b);
+
+		Vec<N, T> x;
+		x[N - 1] = c[N - 1] / R[N - 1][N - 1];
+		for (int k = N - 2; k >= 0; --k)
+		{
+			x[k] = c[k];
+			for (size_t i = N - 1; i > k; --i)
+				x[k] -= x[i] * R[i][k];
+			x[k] /= R[k][k];
+		}
+
+		return x;
+	}
+
+	template <typename T>
+	inline Vec<Type::Dynamic, T> SolveQR(const Mat<Type::Dynamic, Type::Dynamic, T>& Q,
+		const Mat<Type::Dynamic, Type::Dynamic, T>& R, const Vec<Type::Dynamic, T>& b)
+	{
+		const size_t N = Q.col_len();
+
+		if (!IsSquareMat(Q) || !IsSquareMat(R))
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix Q or R are not square matrix");
+
+		if (Q.col_len() != R.col_len() || Q.col_len() != b.length())
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrixs and vector size not match");
+
+		Vec<Type::Dynamic, T> c(N);
+		Mat<Type::Dynamic, Type::Dynamic, T> L(N, N);
+		Mat<Type::Dynamic, Type::Dynamic, T> U(N, N);
+		Mat<Type::Dynamic, Type::Dynamic, T> P(N, N);
+		LUPDecompose(Q, L, U, P);
+		c = SolveLUP(L, U, P, b);
+
+		Vec<Type::Dynamic, T> x(N);
+		x[N - 1] = c[N - 1] / R[N - 1][N - 1];
+		for (int k = N - 2; k >= 0; --k)
+		{
+			x[k] = c[k];
+			for (size_t i = N - 1; i > k; --i)
+				x[k] -= x[i] * R[i][k];
+			x[k] /= R[k][k];
+		}
+
+		return x;
+	}
+
 	// function
 	template <size_t M, size_t N, typename T>
 	inline T Cofactor(const Mat<M, N, T>& A, size_t m, size_t n)
 	{
 		if (m >= M || n >= N)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 
 		Mat<M - 1, N - 1, T> res;
 		size_t i = 0;
@@ -301,7 +698,7 @@ namespace MiniRenderer::Math
 	{
 		const size_t M = A.col_len(), N = A.row_len();
 		if (m >= M || n >= N)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 
 		Mat<M - 1, N - 1, T> res;
 		size_t i = 0;
@@ -383,7 +780,7 @@ namespace MiniRenderer::Math
 		// Bareiss Algorithm
 		const size_t N = A.col_len();
 		if (!IsSquareMat(A))
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Matrix A is not a square matrix");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix A is not a square matrix");
 		
 		T pivot = T(1);
 		Vec<Type::Dynamic, T> res(N);
@@ -462,7 +859,7 @@ namespace MiniRenderer::Math
 	{
 		const size_t N = a.col_len();
 		if (!IsSquareMat(a))
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Matrix A is not a square matrix");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix A is not a square matrix");
 
 		T pivot = T(1);
 		Mat<Type::Dynamic, Type::Dynamic, T> A(a, N, N);
@@ -481,6 +878,103 @@ namespace MiniRenderer::Math
 		return A[N - 1][N - 1];
 	}
 
+	template <typename T>
+	inline Mat<1, 1, T> Inverse(const Mat<1, 1, T>& a)
+	{
+		return Mat<1, 1, T>{ T(1) / a[0][0] };
+	}
+
+	template <typename T>
+	inline Mat<2, 2, T> Inverse(const Mat<2, 2, T>& a)
+	{
+		return Adjugate(a) / Det(a);
+	}
+
+	template <typename T>
+	inline Mat<3, 3, T> Inverse(const Mat<3, 3, T>& a)
+	{
+		return Adjugate(a) / Det(a);
+	}
+
+	template <typename T>
+	inline Mat<4, 4, T> Inverse(const Mat<4, 4, T>& a)
+	{
+		return Adjugate(a) / Det(a);
+	}
+
+	template <size_t N, typename T>
+	inline Mat<N, N, T> Inverse(const Mat<N, N, T>& a)
+	{
+		Mat<N, N, T> L, U;
+		LUDecompose(a, L, U);
+		
+		Mat<N, N, T> IL, IU;
+		for (size_t i = 0; i < N; ++i)
+		{
+			IL[i][i] = T(1);
+			for (size_t j = i + 1; j < N; ++j)
+			{
+				for (size_t k = i; k < j; ++k)
+				{
+					IL[i][j] -= L[k][j] * IL[i][k];
+				}
+			}
+		}
+		for (int i = N - 1; i >= 0; --i)
+		{
+			IU[i][i] = T(1) / U[i][i];
+			for (int j = i - 1; j >= 0; --j)
+			{
+				for (size_t k = i; k > j; --k)
+				{
+					IU[i][j] -= U[k][j] * IU[i][k];
+				}
+				IU[i][j] /= U[j][j];
+			}
+		}
+
+		return IU * IL;
+	}
+
+	template <typename T>
+	inline Mat<Type::Dynamic, Type::Dynamic, T> Inverse(const Mat<Type::Dynamic, Type::Dynamic, T>& a)
+	{
+		const size_t N = a.col_len();
+
+		if (!IsSquareMat(a))
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix A is not a square matrix");
+
+		Mat<Type::Dynamic, Type::Dynamic, T> L, U;
+		LUDecompose(a, L, U);
+
+		Mat<Type::Dynamic, Type::Dynamic, T> IL(N, N), IU(N, N);
+		for (size_t i = 0; i < N; ++i)
+		{
+			IL[i][i] = T(1);
+			for (size_t j = i + 1; j < N; ++j)
+			{
+				for (size_t k = i; k < j; ++k)
+				{
+					IL[i][j] -= L[k][j] * IL[i][k];
+				}
+			}
+		}
+		for (int i = N - 1; i >= 0; --i)
+		{
+			IU[i][i] = T(1) / U[i][i];
+			for (int j = i - 1; j >= 0; --j)
+			{
+				for (size_t k = i; k > j; --k)
+				{
+					IU[i][j] -= U[k][j] * IU[i][k];
+				}
+				IU[i][j] /= U[j][j];
+			}
+		}
+
+		return IU * IL;
+	}
+
 	// correct
 	template <size_t M, size_t N, typename T>
 	inline bool IsSquareMat(const Mat<M, N, T>& A)
@@ -496,6 +990,29 @@ namespace MiniRenderer::Math
 		if (A.col_len() == A.row_len())
 			return true;
 		return false;
+	}
+
+	template <size_t M, size_t N, typename T>
+	inline bool IsRegularMat(const Mat<M, N, T>& A)
+	{
+		size_t len = A[0].length();
+		for (size_t i = 1; i < N; ++i)
+			if (A[i].length() != len)
+				return false;
+		return true;
+	}
+
+	template <typename T>
+	inline bool IsRegularMat(const Mat<Type::Dynamic, Type::Dynamic, T>& A)
+	{
+		if (A.row_len() == 0)
+			return false;
+		
+		size_t len = A[0].length();
+		for (size_t i = 1; i < A.row_len(); ++i)
+			if (A[i].length() != len)
+				return false;
+		return true;
 	}
 
 	template <size_t N, typename T>
@@ -524,4 +1041,78 @@ namespace MiniRenderer::Math
 		}
 		return true;
 	}
-}
+
+	template <size_t M, size_t N, typename T>
+	inline bool IsTridiagonalMat(const Mat<M, N, T>& A)
+	{
+		if (!IsSquareMat(A))
+			return false;
+
+		for (size_t i = 0; i < M - 2; ++i)
+			for (size_t j = i + 2; j < M; ++j)
+				if (A[i][j] > Epsilon || A[i][j] < -Epsilon)
+					return false;
+
+		for (size_t i = 2; i < M; ++i)
+			for (size_t j = 0; j < i - 1; ++j)
+				if (A[i][j] > Epsilon || A[i][j] < -Epsilon)
+					return false;
+
+		return true;
+	}
+
+	template <typename T>
+	inline bool IsTridiagonalMat(const Mat<Type::Dynamic, Type::Dynamic, T>& A)
+	{
+		const size_t M = A.col_len();
+		
+		if (!IsSquareMat(A))
+			return false;
+
+		for (size_t i = 0; i < M - 2; ++i)
+			for (size_t j = i + 2; j < M; ++j)
+				if (A[i][j] > Epsilon || A[i][j] < -Epsilon)
+					return false;
+
+		for (size_t i = 2; i < M; ++i)
+			for (size_t j = 0; j < i - 1; ++j)
+				if (A[i][j] > Epsilon || A[i][j] < -Epsilon)
+					return false;
+
+		return true;
+	}
+
+	template <size_t M, size_t N, typename T>
+	inline bool IsSingularMat(const Mat<M, N, T>& A)
+	{
+		if (!IsSquareMat(A))
+			return false;
+
+		if (Abs(Det(A)) < Epsilon)
+			return true;
+		return false;
+	}
+
+	template <typename T>
+	inline bool IsSingularMat(const Mat<Type::Dynamic, Type::Dynamic, T>& A)
+	{
+		if (!IsSquareMat(A))
+			return false;
+
+		if (Abs(Det(A)) < Epsilon)
+			return true;
+		return false;
+	}
+
+	template <size_t M, size_t N, size_t O, typename T>
+	inline constexpr bool CanBeSolved(const Mat<M, N, T>& A, const Vec<O, T>& b)
+	{
+		return N == O;
+	}
+
+	template <typename T>
+	inline bool CanBeSolved(const Mat<Type::Dynamic, Type::Dynamic, T>& A, const Vec<Type::Dynamic, T>& b)
+	{
+		return A.row_len() == b.length();
+	}
+} // namespace MiniRenderer

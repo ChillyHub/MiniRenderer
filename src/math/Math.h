@@ -6,5 +6,6 @@
 #include "math/type/Mat.h"
 #include "math/type/Quat.h"
 
+#include "math/func/Algorithm.h"
 #include "math/func/Func.h"
 #include "math/func/Transform.h"

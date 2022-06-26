@@ -175,4 +175,4 @@ namespace MiniRenderer
 			Last = Menu
 		};
 	}
-}
+} // namespace MiniRenderer

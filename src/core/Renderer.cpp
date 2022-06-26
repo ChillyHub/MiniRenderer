@@ -1,4 +1,4 @@
-﻿#include "MiniRenderer.h"
+#include "MiniRenderer.h"
 
 #include <iostream>
 
@@ -6,7 +6,7 @@ namespace MiniRenderer
 {
 	Renderer::Renderer(int width, int height)
 		: m_rasterizer(Rasterizer(width, height, this))
-		, m_screen(Screen()) , m_profiler(Profiler())
+		, m_screen(Screen()), m_profiler(Profiler())
 	{
 		try
 		{
@@ -45,11 +45,11 @@ namespace MiniRenderer
 		try
 		{
 			m_screen.Show();
-			
+
 			while (m_screen.ShouldRun())
 			{
 				m_profiler.UpdateFPS();
-				
+
 				if (m_camera)
 				{
 					m_camera->Update();
@@ -67,4 +67,4 @@ namespace MiniRenderer
 			exit(EXIT_FAILURE);
 		}
 	}
-}
+} // namespace MiniRenderer

@@ -45,4 +45,4 @@ namespace MiniRenderer
 		s_startTime = std::chrono::steady_clock::now();
 		s_lastTime = s_startTime;
 	}
-}
+} // namespace MiniRenderer

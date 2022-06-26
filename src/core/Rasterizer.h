@@ -1,24 +1,12 @@
 #pragma once
 
+#include "Base.h"
 #include "Buffer.h"
 #include "Shader.h"
 #include "Vertex.h"
 
 namespace MiniRenderer
 {
-	enum DrawType
-	{
-		TRAINGLE,
-		LINE
-	};
-
-	enum FaceCull
-	{
-		CullNone,
-		CullFront,
-		CullBack
-	};
-
 	class Renderer;
 	
 	class Rasterizer
@@ -31,6 +19,9 @@ namespace MiniRenderer
 			IVec2 scrPixel;
 			float depth;
 		};
+		DataType RenderDataType = Triangles;
+		DrawType RenderDrawType = FACE;
+		FaceCull RenderFaceCull = CullNone;
 	public:
 		Rasterizer(int width, int height, Renderer* renderer);
 		Framebuffer* GetFramebuffer();
@@ -39,12 +30,12 @@ namespace MiniRenderer
 		Depthbuffer* GetDepthbuffer();
 		template SHADER_DATA_TEMPLATE
 		void SetShader(const Shader SHADER_DATA_TYPE& shader);
-		void SetBufferWidth(int width);
-		void SetBufferHeight(int height);
 		void SetBufferSize(int width, int height);
 
 		template SHADER_DATA_TEMPLATE
-		void DrawCall(VertexInput* vertices, int vertexCount, const Shader SHADER_DATA_TYPE& shader, VertexIndex* indices = nullptr);
+		void DrawCall(const Shader SHADER_DATA_TYPE& shader, VertexInput* vertices, int vertexCount,
+			VertexIndex* indices = nullptr, int indexCount = 0);
+		
 		void Render();
 		void Flush();
 
@@ -67,7 +58,7 @@ namespace MiniRenderer
 
 		Vec4 m_backgroundColor;
 	};
-}
+} // namespace MiniRenderer
 
 // inline file
 #include "Rasterizer.inl"

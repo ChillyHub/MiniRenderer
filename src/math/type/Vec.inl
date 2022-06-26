@@ -157,17 +157,6 @@ namespace MiniRenderer
 
 	template <size_t N, typename T>
 	template <typename U>
-	inline constexpr Vec<N, T>& Vec<N, T>::operator+= (const Vec<1, U>& rhs)
-	{
-		for (size_t i = 0; i < N; ++i)
-		{
-			e[i] += static_cast<T>(rhs.e[0]);
-		}
-		return *this;
-	}
-
-	template <size_t N, typename T>
-	template <typename U>
 	inline constexpr Vec<N, T>& Vec<N, T>::operator+= (const Vec<N, U>& rhs)
 	{
 		for (size_t i = 0; i < N; ++i)
@@ -184,17 +173,6 @@ namespace MiniRenderer
 		for (size_t i = 0; i < N; ++i)
 		{
 			e[i] -= static_cast<T>(rhs);
-		}
-		return *this;
-	}
-
-	template <size_t N, typename T>
-	template <typename U>
-	inline constexpr Vec<N, T>& Vec<N, T>::operator-= (const Vec<1, U>& rhs)
-	{
-		for (size_t i = 0; i < N; ++i)
-		{
-			e[i] -= static_cast<T>(rhs.e[0]);
 		}
 		return *this;
 	}
@@ -223,17 +201,6 @@ namespace MiniRenderer
 
 	template <size_t N, typename T>
 	template <typename U>
-	inline constexpr Vec<N, T>& Vec<N, T>::operator*= (const Vec<1, U>& rhs)
-	{
-		for (size_t i = 0; i < N; ++i)
-		{
-			e[i] *= static_cast<T>(rhs.e[0]);
-		}
-		return *this;
-	}
-
-	template <size_t N, typename T>
-	template <typename U>
 	inline constexpr Vec<N, T>& Vec<N, T>::operator*= (const Vec<N, U>& rhs)
 	{
 		for (size_t i = 0; i < N; ++i)
@@ -250,17 +217,6 @@ namespace MiniRenderer
 		for (size_t i = 0; i < N; ++i)
 		{
 			e[i] /= static_cast<T>(rhs);
-		}
-		return *this;
-	}
-
-	template <size_t N, typename T>
-	template <typename U>
-	inline constexpr Vec<N, T>& Vec<N, T>::operator/= (const Vec<1, U>& rhs)
-	{
-		for (size_t i = 0; i < N; ++i)
-		{
-			e[i] /= static_cast<T>(rhs.e[0]);
 		}
 		return *this;
 	}
@@ -1603,7 +1559,7 @@ namespace MiniRenderer
 		os << "[ ";
 		for (size_t i = 0; i < N; ++i)
 		{
-			os << rhs[i];
+			os << OUTNUM(rhs[i]);
 			if (i < N - 1)
 				os << ", ";
 		}
@@ -1741,7 +1697,7 @@ namespace MiniRenderer
 		os << "[ ";
 		for (size_t i = 0; i < rhs.length(); ++i)
 		{
-			os << rhs[i];
+			os << OUTNUM(rhs[i]);
 			if (i < rhs.length() - 1)
 				os << ", ";
 		}

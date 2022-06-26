@@ -86,7 +86,7 @@ namespace MiniRenderer
 	inline Mat<M, N, T>::Col& Mat<M, N, T>::operator[] (size_t i)
 	{
 		if (i < 0 || i >= N)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -94,7 +94,7 @@ namespace MiniRenderer
 	inline constexpr const Mat<M, N, T>::Col& Mat<M, N, T>::operator[] (size_t i) const
 	{
 		if (i < 0 || i >= N)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -114,15 +114,15 @@ namespace MiniRenderer
 	Mat<M, N, T>::Col Mat<M, N, T>::GetCol(size_t i) const
 	{
 		if (i < 0 || i >= N)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
 	template <size_t M, size_t N, typename T>
 	Mat<M, N, T>::Row Mat<M, N, T>::GetRow(size_t i) const
 	{
-		if (i < 0 || i >= N)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+		if (i < 0 || i >= M)
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		Row res;
 		for (size_t j = 0; j < N; ++j)
 			res[j] = m[j][i];
@@ -329,7 +329,7 @@ namespace MiniRenderer
 	inline Mat<2, 2, T>::Col& Mat<2, 2, T>::operator[] (size_t i)
 	{
 		if (i < 0 || i >= 2)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -337,7 +337,7 @@ namespace MiniRenderer
 	inline constexpr const Mat<2, 2, T>::Col& Mat<2, 2, T>::operator[] (size_t i) const
 	{
 		if (i < 0 || i >= 2)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -357,7 +357,7 @@ namespace MiniRenderer
 	Mat<2, 2, T>::Col Mat<2, 2, T>::GetCol(size_t i) const
 	{
 		if (i < 0 || i >= 2)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -365,7 +365,7 @@ namespace MiniRenderer
 	Mat<2, 2, T>::Row Mat<2, 2, T>::GetRow(size_t i) const
 	{
 		if (i < 0 || i >= 2)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		Row res;
 		res[0] = m[0][i];
 		res[1] = m[1][i];
@@ -377,7 +377,7 @@ namespace MiniRenderer
 	void Mat<2, 2, T>::SetCol(size_t i, const Vec<2, U>& col)
 	{
 		if (i < 0 || i >= 2)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		m[i] = col;
 	}
 
@@ -386,7 +386,7 @@ namespace MiniRenderer
 	void Mat<2, 2, T>::SetRow(size_t i, const Vec<2, U>& row)
 	{
 		if (i < 0 || i >= 2)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		m[0][i] = row[0];
 		m[1][i] = row[1];
 	}
@@ -600,7 +600,7 @@ namespace MiniRenderer
 	inline Mat<3, 3, T>::Col& Mat<3, 3, T>::operator[] (size_t i)
 	{
 		if (i < 0 || i >= 3)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -608,7 +608,7 @@ namespace MiniRenderer
 	inline constexpr const Mat<3, 3, T>::Col& Mat<3, 3, T>::operator[] (size_t i) const
 	{
 		if (i < 0 || i >= 3)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -628,7 +628,7 @@ namespace MiniRenderer
 	Mat<3, 3, T>::Col Mat<3, 3, T>::GetCol(size_t i) const
 	{
 		if (i < 0 || i >= 3)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -636,7 +636,7 @@ namespace MiniRenderer
 	Mat<3, 3, T>::Row Mat<3, 3, T>::GetRow(size_t i) const
 	{
 		if (i < 0 || i >= 3)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		Row res;
 		res[0] = m[0][i];
 		res[1] = m[1][i];
@@ -649,7 +649,7 @@ namespace MiniRenderer
 	void Mat<3, 3, T>::SetCol(size_t i, const Vec<3, U>& col)
 	{
 		if (i < 0 || i >= 3)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		m[i] = col;
 	}
 
@@ -658,7 +658,7 @@ namespace MiniRenderer
 	void Mat<3, 3, T>::SetRow(size_t i, const Vec<3, U>& row)
 	{
 		if (i < 0 || i >= 3)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		m[0][i] = row[0];
 		m[1][i] = row[1];
 		m[2][i] = row[2];
@@ -911,7 +911,7 @@ namespace MiniRenderer
 	inline Mat<4, 4, T>::Col& Mat<4, 4, T>::operator[] (size_t i)
 	{
 		if (i < 0 || i >= 4)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -919,7 +919,7 @@ namespace MiniRenderer
 	inline constexpr const Mat<4, 4, T>::Col& Mat<4, 4, T>::operator[] (size_t i) const
 	{
 		if (i < 0 || i >= 4)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -939,7 +939,7 @@ namespace MiniRenderer
 	Mat<4, 4, T>::Col Mat<4, 4, T>::GetCol(size_t i) const
 	{
 		if (i < 0 || i >= 4)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -947,7 +947,7 @@ namespace MiniRenderer
 	Mat<4, 4, T>::Row Mat<4, 4, T>::GetRow(size_t i) const
 	{
 		if (i < 0 || i >= 4)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		Row res;
 		res[0] = m[0][i];
 		res[1] = m[1][i];
@@ -961,7 +961,7 @@ namespace MiniRenderer
 	void Mat<4, 4, T>::SetCol(size_t i, const Vec<3, U>& col)
 	{
 		if (i < 0 || i >= 4)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		m[i] = col;
 	}
 
@@ -970,7 +970,7 @@ namespace MiniRenderer
 	void Mat<4, 4, T>::SetRow(size_t i, const Vec<3, U>& row)
 	{
 		if (i < 0 || i >= 4)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		m[0][i] = row[0];
 		m[1][i] = row[1];
 		m[2][i] = row[2];
@@ -1220,7 +1220,7 @@ namespace MiniRenderer
 		Mat<Type::Dynamic, Type::Dynamic, T>::operator[] (size_t i)
 	{
 		if (i < 0 || i >= rowlen)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -1229,7 +1229,7 @@ namespace MiniRenderer
 		Mat<Type::Dynamic, Type::Dynamic, T>::operator[] (size_t i) const
 	{
 		if (i < 0 || i >= rowlen)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -1262,7 +1262,7 @@ namespace MiniRenderer
 		Mat<Type::Dynamic, Type::Dynamic, T>::GetCol(size_t i) const
 	{
 		if (i < 0 || i >= rowlen)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		return m[i];
 	}
 
@@ -1270,8 +1270,8 @@ namespace MiniRenderer
 	Mat<Type::Dynamic, Type::Dynamic, T>::Row 
 		Mat<Type::Dynamic, Type::Dynamic, T>::GetRow(size_t i) const
 	{
-		if (i < 0 || i >= rowlen)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Index out of range");
+		if (i < 0 || i >= collen)
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Index out of range");
 		Row res(rowlen);
 		for (size_t j = 0; j < rowlen; ++j)
 			res[j] = m[j][i];
@@ -1574,6 +1574,16 @@ namespace MiniRenderer
 	}
 
 	template <size_t M, size_t N, typename T>
+	inline Mat<M, N, T> operator*(const Vec<M, T>& l, const Mat<1, N, T>& r)
+	{
+		Mat<M, N, T> res;
+		for (size_t i = 0; i < N; ++i)
+			for (size_t j = 0; j < M; ++j)
+				res[i][j] = l[j] * r[i][0];
+		return res;
+	}
+
+	template <size_t M, size_t N, typename T>
 	inline constexpr bool operator==(const Mat<M, N, T>& lhs, const Mat<M, N, T>& rhs)
 	{
 		for (size_t i = 0; i < N; ++i)
@@ -1600,7 +1610,7 @@ namespace MiniRenderer
 				os << "  ";
 			for (size_t j = 0; j < N; ++j)
 			{
-				os << row[j];
+				os << OUTNUM(row[j]);
 				if (j < N - 1)
 					os << ", ";
 			}
@@ -1719,7 +1729,7 @@ namespace MiniRenderer
 	inline Vec<Type::Dynamic, T> operator*(const Mat<Type::Dynamic, Type::Dynamic, T>& l, const Vec<Type::Dynamic, T>& r)
 	{
 		if (l.row_len() != r.length())
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Vertex length not equals");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Vertex length not equals");
 		Vec<Type::Dynamic, T> res(l.col_len());
 		for (size_t i = 0; i < r.length(); ++i)
 			res += l[i] * r[i];
@@ -1729,13 +1739,26 @@ namespace MiniRenderer
 	template <typename T>
 	inline Mat<Type::Dynamic, Type::Dynamic, T> operator*(const Mat<Type::Dynamic, Type::Dynamic, T>& l, const Mat<Type::Dynamic, Type::Dynamic, T>& r)
 	{
-		int m = l.col_len(), k1 = l.row_len(), k2 = r.col_len(), n = r.row_len();
+		const size_t m = l.col_len(), k1 = l.row_len(), k2 = r.col_len(), n = r.row_len();
 		if (k1 != k2)
-			throw std::runtime_error(S("ERROR: [") + __func__ + "] Matrix size not match");
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrix size not match");
 		Mat<Type::Dynamic, Type::Dynamic, T> res(m, n);
 		for (size_t i = 0; i < n; ++i)
 			for (size_t k = 0; k < k1; ++k)
 				res[i] += l[k] * r[i][k];
+		return res;
+	}
+
+	template <typename T>
+	inline Mat<Type::Dynamic, Type::Dynamic, T> operator*(const Vec<Type::Dynamic, T>& l, const Mat<Type::Dynamic, Type::Dynamic, T>& r)
+	{
+		const size_t m = l.length(), n = r.row_len();
+		if (r.col_len() != 1)
+			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Vertex length not equals");
+		Mat<Type::Dynamic, Type::Dynamic, T> res(m, n);
+		for (size_t i = 0; i < n; ++i)
+			for (size_t j = 0; j < m; ++j)
+				res[i][j] = l[j] * r[i][0];
 		return res;
 	}
 
@@ -1762,7 +1785,7 @@ namespace MiniRenderer
 				os << "  ";
 			for (size_t j = 0; j < rhs.row_len(); ++j)
 			{
-				os << row[j];
+				os << OUTNUM(row[j]);
 				if (j < rhs.row_len() - 1)
 					os << ", ";
 			}

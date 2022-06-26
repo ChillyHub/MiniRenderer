@@ -5,8 +5,6 @@
 #include "math/type/Mat.h"
 #include "math/type/Quat.h"
 
-#include "math/func/Algorithm.h"
-
 namespace MiniRenderer::Math
 {
 	// Number ------------------------------------------------------
@@ -123,11 +121,9 @@ namespace MiniRenderer::Math
 	// Matrix ------------------------------------------------------
 	// -------------------------------------------------------------
 	template <size_t N, typename T>
-	Mat<N, 1, T> Transpose(const Vec<N, T>& a);
+	Mat<1, N, T> Transpose(const Vec<N, T>& a);
 	template <size_t M, size_t N, typename T>
 	Mat<N, M, T> Transpose(const Mat<M, N, T>& a);
-	template <size_t N, typename T>
-	Mat<N, N, T> Inverse(const Mat<N, N, T>& a);
 
 	template <typename T>
 	Mat<Type::Dynamic, Type::Dynamic, T> Transpose(const Vec<Type::Dynamic, T>& a);
@@ -152,7 +148,7 @@ namespace MiniRenderer::Math
 
 	inline Quat MatToQuat(const Mat3& a);
 	inline Quat MatToQuat(const Mat4& a);
-}
+} // namespace MiniRenderer
 
 // inline file
 #include "Func.inl"

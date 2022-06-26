@@ -73,4 +73,4 @@ namespace MiniRenderer
 
 	//template SHADER_DATA_TEMPLATE
 	//using Pass = Shader SHADER_DATA_TYPE::Pass;
-}
+} // namespace MiniRenderer

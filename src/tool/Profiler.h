@@ -14,4 +14,4 @@ namespace MiniRenderer
 		float m_lastFrameTime = 0.0f;
 		int m_frameCount = 0;
 	};
-}
+} // namespace MiniRenderer

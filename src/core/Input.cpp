@@ -43,4 +43,4 @@ namespace MiniRenderer
 	{
 		Screen::ResetWheelDelta();
 	}
-}
+} // namespace MiniRenderer

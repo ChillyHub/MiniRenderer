@@ -69,8 +69,18 @@ namespace MiniRenderer
 	template <typename T, typename U>
 	constexpr bool operator!=(const Complex<T>& lsh, const Complex<U>& rhs);
 
+	template <typename T, typename U>
+	constexpr bool operator<(const Complex<T>& lhs, U rhs);
+	template <typename T, typename U>
+	constexpr bool operator>(const Complex<T>& lhs, U rhs);
+
 	template <typename T>
 	std::ostream& operator<<(std::ostream& os, const Complex<T>& rhs);
+
+	typedef Complex<int> IComplex;
+	typedef Complex<float> FComplex;
+	typedef Complex<double> DComplex;
+	typedef Complex<unsigned int> UComplex;
 } // namespace MiniRenderer
 
 // inline file

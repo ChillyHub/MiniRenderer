@@ -185,4 +185,4 @@ namespace MiniRenderer
 			<< ") ]";
 		return os;
 	}
-}
+} // namespace MiniRenderer

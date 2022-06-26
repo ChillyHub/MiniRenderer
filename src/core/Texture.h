@@ -51,4 +51,4 @@ namespace MiniRenderer
 	{
 
 	};
-}
+} // namespace MiniRenderer

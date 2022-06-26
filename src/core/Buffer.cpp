@@ -122,4 +122,4 @@ namespace MiniRenderer
 		free(m_data);
 	}
 
-}
+} // namespace MiniRenderer

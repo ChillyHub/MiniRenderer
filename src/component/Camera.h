@@ -38,6 +38,8 @@ namespace MiniRenderer
 		Mat4 GetProjectMat() const { return m_projectMat; }
 		Mat4 GetWorldToClipMat() const { return m_projectMat * m_viewMat; }
 		Mat4 GetClipToWorldMat() const { return Math::Inverse(m_projectMat * m_viewMat); }
+		Vec3 GetObjToViewDir(const Vec3& worldPos) const { return Math::Normailzed(Position - worldPos); }
+		Vec3 GetViewToObjDir(const Vec3& worldPos) const { return Math::Normailzed(worldPos - Position); }
 	public:
 		void Update();
 		void Resize(float width, float height);
@@ -63,4 +65,4 @@ namespace MiniRenderer
 	private:
 		ProjectionType Projection = ProjectionType::Perspective;
 	};
-}
+} // namespace MiniRenderer

@@ -32,4 +32,4 @@ namespace MiniRenderer
 	{
 		return &m_framebuffer;
 	}
-}
+} // namespace MiniRenderer

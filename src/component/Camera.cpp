@@ -146,4 +146,4 @@ namespace MiniRenderer
 			m_projectMat = Math::Orthogonal(Aspect * Size, Size, NearClip, FarClip);
 		}
 	}
-}
+} // namespace MiniRenderer

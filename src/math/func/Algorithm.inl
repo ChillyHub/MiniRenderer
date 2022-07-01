@@ -321,21 +321,18 @@ namespace MiniRenderer::Math
 					s = c * t;
 				}
 
-				Mat<M, M, T> GT(T(1));
-				GT[j - 1][j - 1] = c;
-				GT[j - 1][j] = s;
-				GT[j][j - 1] = -s;
-				GT[j][j] = c;
-				Q = Q * GT;
-
 				for (size_t k = 0; k < N; ++k)
 				{
 					T o = R[k][j - 1], p = R[k][j];
+					T q = Q[k][j - 1], r = Q[k][j];
 					R[k][j - 1] = c * o + s * p;
 					R[k][j] = -s * o + c * p;
+					Q[k][j - 1] = c * q + s * r;
+					Q[k][j] = -s * q + c * r;
 				}
 			}
 		}
+		Q = Transpose(Q);
 	}
 
 	template <typename T>
@@ -373,21 +370,18 @@ namespace MiniRenderer::Math
 					s = c * t;
 				}
 
-				Mat<Type::Dynamic, Type::Dynamic, T> GT(T(1), M, M);
-				GT[j - 1][j - 1] = c;
-				GT[j - 1][j] = s;
-				GT[j][j - 1] = -s;
-				GT[j][j] = c;
-				Q = Q * GT;
-
 				for (size_t k = 0; k < N; ++k)
 				{
 					T o = R[k][j - 1], p = R[k][j];
+					T q = Q[k][j - 1], r = Q[k][j];
 					R[k][j - 1] = c * o + s * p;
 					R[k][j] = -s * o + c * p;
+					Q[k][j - 1] = c * q + s * r;
+					Q[k][j] = -s * q + c * r;
 				}
 			}
 		}
+		Q = Transpose(Q);
 	}
 
 	template <size_t M, size_t N, typename T>

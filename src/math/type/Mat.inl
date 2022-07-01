@@ -1236,7 +1236,7 @@ namespace MiniRenderer
 	template <typename T>
 	inline T* Mat<Type::Dynamic, Type::Dynamic, T>::data()
 	{
-		return m;
+		return &m[0][0];
 	}
 
 	template <typename T>

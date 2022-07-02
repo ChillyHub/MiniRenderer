@@ -28,7 +28,7 @@ namespace MiniRenderer
         std::vector<unsigned int> indices;
         unsigned int indexCount;
         unsigned int vertexCount;
-        DataType dataType = DataType::TriangleStrip;
+        DataType dataType = DataType::Triangles;
     private:
         const unsigned int X_SEGMENTS = 64;
         const unsigned int Y_SEGMENTS = 64;
@@ -57,18 +57,28 @@ namespace MiniRenderer
         {
             if (!oddRow) // even rows: y == 0, y == 2; and so on
             {
-                for (unsigned int x = 0; x <= X_SEGMENTS; ++x)
+                for (unsigned int x = 0; x < X_SEGMENTS; ++x)
                 {
                     indices.push_back(y * (X_SEGMENTS + 1) + x);
+                    indices.push_back(y * (X_SEGMENTS + 1) + x + 1);
+                    indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
+
+                    indices.push_back(y * (X_SEGMENTS + 1) + x + 1);
+                    indices.push_back((y + 1) * (X_SEGMENTS + 1) + x + 1);
                     indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
                 }
             }
             else
             {
-                for (int x = X_SEGMENTS; x >= 0; --x)
+                for (int x = X_SEGMENTS - 1; x >= 0; --x)
                 {
+                    indices.push_back((y + 1) * (X_SEGMENTS + 1) + x + 1);
                     indices.push_back((y + 1) * (X_SEGMENTS + 1) + x);
                     indices.push_back(y * (X_SEGMENTS + 1) + x);
+
+                    indices.push_back((y + 1) * (X_SEGMENTS + 1) + x + 1);
+                    indices.push_back(y * (X_SEGMENTS + 1) + x);
+                    indices.push_back(y * (X_SEGMENTS + 1) + x + 1);
                 }
             }
             oddRow = !oddRow;

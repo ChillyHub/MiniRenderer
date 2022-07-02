@@ -83,6 +83,7 @@ int main()
 	// Renderer
 	Renderer renderer(800, 600);
 	renderer.GetRasterizer().RenderDataType = sphere.GetDataType();
+	renderer.GetRasterizer().RenderFaceCull = FaceCull::CullBack;
 	auto& camera = renderer.AddCamera();
 	camera.Position = { 3.0f, 3.0f, 0.0f };
 	camera.CameraLookAt({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });

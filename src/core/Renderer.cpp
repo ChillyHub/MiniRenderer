@@ -1,6 +1,7 @@
 #include "MiniRenderer.h"
 
 #include <iostream>
+#include <thread>
 
 namespace MiniRenderer
 {
@@ -48,7 +49,7 @@ namespace MiniRenderer
 
 			while (m_screen.ShouldRun())
 			{
-				m_profiler.UpdateFPS();
+				// m_profiler.UpdateFPS();
 
 				if (m_camera)
 				{

@@ -3,6 +3,7 @@
 #include <Windows.h>
 
 #include <string>
+#include <thread>
 
 #include "Buffer.h"
 #include "Input.h"
@@ -23,6 +24,7 @@ namespace MiniRenderer
 	public:
 		static LRESULT CALLBACK WinSunProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 		static void ResizeWindow(HWND hWnd);
+		static void ShowFPS(const std::wstring& m_title);
 		
 		static HWND GetHandleWnd() { return s_hWnd; }
 		static int GetKeyPress(size_t i) { return s_keyPress[i]; }
@@ -36,6 +38,7 @@ namespace MiniRenderer
 		void setViewBitmap();
 	private:
 		std::wstring m_title;
+		std::thread m_tFPS;
 	private:
 		static int s_width;
 		static int s_height;
@@ -51,6 +54,8 @@ namespace MiniRenderer
 		static int s_mousePress[1024];
 		static int s_wheelDelta;
 		static bool s_isHovered;
+
+		static int s_fps;
 
 		static Renderer* m_renderer;
 	};

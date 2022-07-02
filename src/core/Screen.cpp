@@ -19,6 +19,8 @@ namespace MiniRenderer
 	int Screen::s_wheelDelta = 0;
 	bool Screen::s_isHovered = true;
 
+	int Screen::s_fps = 0;
+
 	Renderer* Screen::m_renderer = nullptr;
 
 	Rasterizer* Renderer::GetPtrRasterizer()
@@ -108,6 +110,9 @@ namespace MiniRenderer
 			throw std::runtime_error("Create bitmap failed!");
 
 		SelectObject(s_hDC, s_hBitmap);
+
+		m_tFPS = std::thread(ShowFPS, m_title);
+		m_tFPS.detach();
 	}
 
 	void Screen::Show()
@@ -125,9 +130,9 @@ namespace MiniRenderer
 		//	i++;
 		//}
 
-		float FPS = m_renderer->GetPtrProfiler()->GetFPS();
-		auto newTitle = m_title + TEXT("   FPS: ") + std::to_wstring(FPS);
-		SetWindowText(s_hWnd, newTitle.c_str());
+		// float FPS = m_renderer->GetPtrProfiler()->GetFPS();
+		// auto newTitle = m_title + TEXT("   FPS: ") + std::to_wstring(FPS);
+		// SetWindowText(s_hWnd, newTitle.c_str());
 
 		setViewBitmap();
 		
@@ -136,6 +141,8 @@ namespace MiniRenderer
 		ReleaseDC(s_hWnd, hDC);
 		
 		messageDispatch();
+
+		s_fps++;
 	}
 
 	void Screen::Destrroy()
@@ -240,6 +247,19 @@ namespace MiniRenderer
 		m_renderer->GetPtrRasterizer()->SetBufferSize(windowWidth, windowHeight);
 		if (m_renderer->GetPtrCamera())
 			m_renderer->GetPtrCamera()->Resize(windowWidth, windowHeight);
+	}
+
+	void Screen::ShowFPS(const std::wstring& m_title)
+	{
+		while (true)
+		{
+			Sleep(1000);
+
+			auto newTitle = m_title + TEXT("   FPS: ") + std::to_wstring(s_fps);
+			SetWindowText(s_hWnd, newTitle.c_str());
+
+			s_fps = 0;
+		}
 	}
 
 	void Screen::messageDispatch()

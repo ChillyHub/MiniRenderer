@@ -5,6 +5,8 @@
 #include "Shader.h"
 #include "Vertex.h"
 
+#include <vector>
+
 namespace MiniRenderer
 {
 	class Renderer;
@@ -41,10 +43,19 @@ namespace MiniRenderer
 
 		void Clear();
 	private:
+		template <typename VertexInput, typename VertexOutput, typename VertexShader>
+		void generatePrimitive(VertexInput* vertices, std::vector<VertexOutput>& primitives, const VertexShader& vs);
+		template <typename VertexOutput, typename FragmentShader, typename VertexUniform>
+		void drawPrimitive(VertexOutput* vertOuts, const FragmentShader& fs);
 		template <typename VertexInput, typename VertexOutput, typename VertexShader, typename FragmentShader, typename VertexUniform>
-		void drawPrimitive(VertexInput* vertices, const Pass PASS_DATA_TYPE& pass, int index);
-		void doClip();
+		void drawPrimitives(VertexInput* vertices, const Pass PASS_DATA_TYPE& pass, int index);
+		template <typename VertexOutput>
+		void doClip(VertexOutput* pre, std::vector<VertexOutput>& cliped);
+		template <typename VertexOutput>
+		void doWClip(VertexOutput* pre, std::vector<VertexOutput>& cliped);
 		void doVertexShader();
+	private:
+		bool InsidePlane(const Vec4& plane, const Vec4& point);
 	private:
 		Framebuffer m_framebuffer;  // ouput to screen
 		Framebuffer m_framebuffer1; // tmp framebuffer
@@ -57,6 +68,15 @@ namespace MiniRenderer
 		int m_bufferHeight;
 
 		Vec4 m_backgroundColor;
+	private:
+		const std::vector<Vec4> c_FacesNormal = {
+			{  0,  0,  1, 1 },
+			{  0,  0, -1, 1 },
+			{  1,  0,  0, 1 },
+			{ -1,  0,  0, 1 },
+			{  0,  1,  0, 1 },
+			{  0, -1,  0, 1 }
+		};
 	};
 } // namespace MiniRenderer
 

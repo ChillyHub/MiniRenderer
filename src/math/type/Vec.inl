@@ -1409,132 +1409,112 @@ namespace MiniRenderer
 	// Vec operator STATIC ------------------------------
 	// --------------------------------------------------
 	template <size_t N, typename T>
+	inline constexpr Vec<N, T> operator+(const Vec<N, T>& rhs)
+	{
+		return rhs;
+	}
+
+	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator-(const Vec<N, T>& rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = -rhs[i];
-		}
+		Vec<N, T> res(T(0));
+		res -= rhs;
 		return res;
 	}
 
 	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator+(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = lhs[i] + rhs[i];
-		}
+		Vec<N, T> res(lhs);
+		res += rhs;
 		return res;
 	}
 
 	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator-(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = lhs[i] - rhs[i];
-		}
+		Vec<N, T> res(lhs);
+		res -= rhs;
 		return res;
 	}
 
 	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator+(const Vec<N, T>& lhs, T rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = lhs[i] + rhs;
-		}
+		Vec<N, T> res(lhs);
+		res += rhs;
 		return res;
 	}
 
 	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator-(const Vec<N, T>& lhs, T rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = lhs[i] - rhs;
-		}
+		Vec<N, T> res(lhs);
+		res -= rhs;
 		return res;
 	}
 
 	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator+(T lhs, const Vec<N, T>& rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = lhs + rhs[i];
-		}
+		Vec<N, T> res(rhs);
+		res += lhs;
 		return res;
 	}
 
 	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator-(T lhs, const Vec<N, T>& rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = lhs - rhs[i];
-		}
+		Vec<N, T> res(-rhs);
+		res += lhs;
 		return res;
 	}
 
 	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator*(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = lhs[i] * rhs[i];
-		}
+		Vec<N, T> res(lhs);
+		res *= rhs;
 		return res;
 	}
 
 	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator/(const Vec<N, T>& lhs, const Vec<N, T>& rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = lhs[i] / rhs[i];
-		}
+		Vec<N, T> res(lhs);
+		res /= rhs;
 		return res;
 	}
 
 	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator*(const Vec<N, T>& lhs, T rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = lhs[i] * rhs;
-		}
+		Vec<N, T> res(lhs);
+		res *= rhs;
 		return res;
 	}
 
 	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator/(const Vec<N, T>& lhs, T rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = lhs[i] / rhs;
-		}
+		Vec<N, T> res(lhs);
+		res /= rhs;
 		return res;
 	}
 
 	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator*(T lhs, const Vec<N, T>& rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = lhs * rhs[i];
-		}
+		Vec<N, T> res(rhs);
+		res *= lhs;
 		return res;
 	}
 
 	template <size_t N, typename T>
 	inline constexpr Vec<N, T> operator/(T lhs, const Vec<N, T>& rhs)
 	{
-		Vec<N, T> res;
-		for (size_t i = 0; i < N; ++i) {
-			res[i] = lhs / rhs[i];
-		}
+		Vec<N, T> res(lhs);
+		res /= rhs;
 		return res;
 	}
 

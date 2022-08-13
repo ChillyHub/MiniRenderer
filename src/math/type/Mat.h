@@ -501,3 +501,7 @@ namespace MiniRenderer
 
 // inline file
 #include "Mat.inl"
+
+#ifdef MATH_SIMD
+	#include "Mat_simd.inl"
+#endif // MATH_SIMD

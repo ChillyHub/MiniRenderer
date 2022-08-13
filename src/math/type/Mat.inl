@@ -1578,8 +1578,7 @@ namespace MiniRenderer
 	{
 		Mat<M, N, T> res;
 		for (size_t i = 0; i < N; ++i)
-			for (size_t j = 0; j < M; ++j)
-				res[i][j] = l[j] * r[i][0];
+			res[i] = l * r[i][0];
 		return res;
 	}
 

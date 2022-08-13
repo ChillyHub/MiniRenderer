@@ -611,10 +611,7 @@ namespace MiniRenderer::Math
 	template <size_t N, typename T>
 	inline Vec<N, T> SolveQR(const Mat<N, N, T>& Q, const Mat<N, N, T>& R, const Vec<N, T>& b)
 	{
-		Vec<N, T> c;
-		Mat<N, N, T> L, U, P;
-		LUPDecompose(Q, L, U, P);
-		c = SolveLUP(L, U, P, b);
+		Vec<N, T> c = Transpose(Q) * b;
 
 		Vec<N, T> x;
 		x[N - 1] = c[N - 1] / R[N - 1][N - 1];
@@ -641,12 +638,7 @@ namespace MiniRenderer::Math
 		if (Q.col_len() != R.col_len() || Q.col_len() != b.length())
 			throw std::runtime_error(S("ERROR: [") + _FUN_NAME_ + "] Matrixs and vector size not match");
 
-		Vec<Type::Dynamic, T> c(N);
-		Mat<Type::Dynamic, Type::Dynamic, T> L(N, N);
-		Mat<Type::Dynamic, Type::Dynamic, T> U(N, N);
-		Mat<Type::Dynamic, Type::Dynamic, T> P(N, N);
-		LUPDecompose(Q, L, U, P);
-		c = SolveLUP(L, U, P, b);
+		Vec<Type::Dynamic, T> c = Transpose(Q) * b;
 
 		Vec<Type::Dynamic, T> x(N);
 		x[N - 1] = c[N - 1] / R[N - 1][N - 1];

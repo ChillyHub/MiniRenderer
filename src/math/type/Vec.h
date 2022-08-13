@@ -2,6 +2,8 @@
 
 #include "Base.h"
 
+#define MATH_SIMD
+
 namespace MiniRenderer
 {
 	/////////////////////////////////////////////////////
@@ -442,3 +444,7 @@ namespace MiniRenderer
 
 // inline file
 #include "Vec.inl"
+
+#ifdef MATH_SIMD
+	#include "Vec_simd.inl"
+#endif // MATH_SIMD

@@ -64,8 +64,8 @@ int main()
 	VertexIndex* indices;
 
 	Sphere sphere;
-	int indexCount = sphere.GetIndexCount();
-	int vertexCount = sphere.GetVertexCount();
+	int indexCount = static_cast<int>(sphere.GetIndexCount());
+	int vertexCount = static_cast<int>(sphere.GetVertexCount());
 	vertices = new a2v[vertexCount];
 	indices = new VertexIndex[indexCount];
 
